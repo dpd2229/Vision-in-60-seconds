@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vision in 60 Seconds!</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 300;
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 30px;
+            align-items: start;
+        }
+
+        .tiles-section {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        .tiles-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .tiles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .statement-tile {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 15px 10px;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            user-select: none;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 70px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .statement-tile:hover, .statement-tile:active {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .statement-tile.selected {
+            background: linear-gradient(135deg, #FF6B6B 0%, #FF5252 100%);
+            transform: scale(0.95);
+        }
+
+        .statement-tile:nth-child(2n) { background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%); }
+        .statement-tile:nth-child(3n) { background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%); }
+        .statement-tile:nth-child(4n) { background: linear-gradient(135deg, #E91E63 0%, #C2185B 100%); }
+        .statement-tile:nth-child(5n) { background: linear-gradient(135deg, #9C27B0 0%, #7B1FA2 100%); }
+        .statement-tile:nth-child(6n) { background: linear-gradient(135deg, #00BCD4 0%, #0097A7 100%); }
+        .statement-tile:nth-child(7n) { background: linear-gradient(135deg, #FF5722 0%, #D84315 100%); }
+
+        .statement-tile:nth-child(2n).selected { background: linear-gradient(135deg, #FF6B6B 0%, #FF5252 100%); }
+        .statement-tile:nth-child(3n).selected { background: linear-gradient(135deg, #FF6B6B 0%, #FF5252 100%); }
+        .statement-tile:nth-child(4n).selected { background: linear-gradient(135deg, #FF6B6B 0%, #FF5252 100%); }
+        .statement-tile:nth-child(5n).selected { background: linear-gradient(135deg, #FF6B6B 0%, #FF5252 100%); }
+        .statement-tile:nth-child(6n).selected { background: linear-gradient(135deg, #FF6B6B 0%, #FF5252 100%); }
+        .statement-tile:nth-child(7n).selected { background: linear-gradient(135deg, #FF6B6B 0%, #FF5252 100%); }
+
+        .profile-section {
+            position: sticky;
+            top: 20px;
+        }
+
+        .profile-card {
+            width: 420px;
+            min-height: 280px; /* Base min-height for display */
+            margin: 0 auto;
+            perspective: 1000px;
+            margin-bottom: 20px;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%; 
+            text-align: center;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+
+        .card-inner.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            min-height: 280px; /* Base min-height for display */
+            backface-visibility: hidden;
+            border-radius: 15px;
+            border: 4px solid #1a237e;
+            background: white;
+            padding: 15px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; 
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            flex-shrink: 0;
+            height: 40px;
+        }
+
+        .card-title-section {
+            flex: 1;
+            text-align: center;
+            margin: 0 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-title {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1rem;
+            line-height: 1.1;
+            margin: 0;
+        }
+
+        .student-initial {
+            width: 35px;
+            height: 35px;
+            border: 2px solid #333;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            background: #FFF59D;
+            flex-shrink: 0;
+            font-size: 14px;
+        }
+
+        .logo {
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA000 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+            flex-shrink: 0;
+            color: white;
+            border: 2px solid #333;
+        }
+
+        .drop-zone {
+            flex: 1; /* Allow drop-zone to expand within fixed height */
+            border: 2px dashed #ccc;
+            border-radius: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            padding: 10px;
+            align-items: flex-start;
+            align-content: flex-start;
+            background: linear-gradient(135deg, #f8f9ff 0%, #f0f8f0 100%);
+            transition: all 0.3s ease;
+            position: relative;
+            min-height: 0; /* Allow flex to manage height */
+            overflow-y: auto; /* Allow scrolling if content overflows in the main view */
+        }
+
+        .drop-zone.drag-over {
+            border-color: #4CAF50;
+            background: linear-gradient(135deg, #f0f8f0 0%, #e8f5e8 100%);
+            transform: scale(1.02);
+        }
+
+        .drop-zone.empty::before {
+            content: "Click tiles to add them here";
+            color: #999;
+            font-style: italic;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            font-size: 0.9rem;
+        }
+
+        .dropped-tile {
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            cursor: pointer;
+            position: relative;
+            border: 2px solid rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            line-height: 1.2;
+        }
+
+        .dropped-tile:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .dropped-tile:hover::after {
+            content: "×";
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #f44336;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        /* Preserve original tile colors when dropped */
+        .dropped-tile[data-color="0"] { background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); }
+        .dropped-tile[data-color="1"] { background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%); }
+        .dropped-tile[data-color="2"] { background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%); }
+        .dropped-tile[data-color="3"] { background: linear-gradient(135deg, #E91E63 0%, #C2185B 100%); }
+        .dropped-tile[data-color="4"] { background: linear-gradient(135deg, #9C27B0 0%, #7B1FA2 100%); }
+        .dropped-tile[data-color="5"] { background: linear-gradient(135deg, #00BCD4 0%, #0097A7 100%); }
+        .dropped-tile[data-color="6"] { background: linear-gradient(135deg, #FF5722 0%, #D84315 100%); }
+
+        .challenge-section {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 10px;
+            flex: 1; /* Allow challenge section to expand within fixed height */
+        }
+
+        .challenge-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.75rem;
+        }
+
+        .challenge-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .challenge-dot.red { background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%); }
+        .challenge-dot.orange { background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%); }
+        .challenge-dot.green { background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%); }
+
+        .text-input {
+            flex: 1;
+            padding: 4px 6px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.65rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+        }
+
+        .vision-target {
+            border: 2px dashed #666;
+            padding: 6px;
+            border-radius: 8px;
+            margin: 8px 0;
+            text-align: center;
+            background: rgba(102, 126, 234, 0.05);
+            flex-shrink: 0; /* Prevent shrinking so it maintains its size */
+        }
+
+        .vision-target h4 {
+            font-size: 0.7rem;
+            margin-bottom: 4px;
+            color: #333;
+        }
+
+        .back-header {
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+        }
+
+        .back-footer {
+            font-size: 0.65rem;
+            font-weight: bold;
+            margin: 4px 0;
+            flex-shrink: 0;
+        }
+
+        .contact-section {
+            text-align: center;
+            margin-bottom: 6px;
+            flex-shrink: 0;
+        }
+
+        .bottom-text {
+            font-size: 0.45rem;
+            color: #999;
+            text-align: center;
+            margin-top: auto; /* Push to the bottom */
+            flex-shrink: 0;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #2196F3;
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .instructions {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .instructions h3 {
+            margin-bottom: 10px;
+        }
+
+        .instructions ol {
+            margin-left: 20px;
+        }
+
+        .instructions li {
+            margin-bottom: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .profile-card {
+                width: 100%;
+                max-width: 420px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .tiles-grid {
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            }
+        }
+
+        @media print {
+            * {
+                -webkit-print-color-adjust: exact !important;
+                color-adjust: exact !important;
+            }
+            
+            body {
+                margin: 0;
+                padding: 0;
+                background: white !important;
+                -ms-overflow-style: none;  /* IE and Edge */
+                scrollbar-width: none;  /* Firefox */
+            }
+
+            body::-webkit-scrollbar {
+                display: none; /* Chrome, Safari, Opera*/
+            }
+            
+            .container, .main-content, .tiles-section, .profile-section, .instructions, .header, .controls {
+                display: none !important;
+            }
+
+            /* New print container to hold cards side-by-side */
+            .print-cards-container {
+                display: flex; /* Use flexbox to lay out cards */
+                justify-content: center; /* Center them on the page */
+                align-items: flex-start; /* Align to the top if heights differ */
+                gap: 20mm; /* Spacing between the two cards in print */
+                width: 100%; /* Take full width of print page */
+                height: 100vh; /* Take full height to center content */
+                margin: 0; /* Remove default body margins */
+                padding: 10mm; /* Add some padding around the print area */
+                box-sizing: border-box; /* Include padding in element's total width and height */
+            }
+
+            /* Ensure cards take appropriate print size */
+            .card-front, .card-back {
+                position: static !important; /* Important for print layout */
+                transform: none !important; /* Remove any transforms */
+                width: 120mm; /* Fixed width for print */
+                height: 100mm !important; /* FIXED HEIGHT FOR PRINT (approx 378px) */
+                min-height: 100mm !important; /* Reinforce fixed height */
+                border: 2px solid #333; /* Visual border for cutting */
+                box-shadow: none !important;
+                page-break-inside: avoid; /* Prevent page breaks inside cards */
+                margin: 0; /* Remove any existing margins */
+            }
+
+            .card-inner {
+                /* Ensure card-inner doesn't interfere with print layout */
+                position: static !important;
+                transform: none !important;
+                height: auto !important;
+            }
+
+            .card-front .drop-zone, .card-back .challenge-section {
+                overflow: visible !important; /* Ensure content is not hidden in print */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Vision in 60 Seconds!</h1>
+            <p>Create personalized vision profiles for students</p>
+        </div>
+
+        <div class="instructions">
+            <h3>How to use:</h3>
+            <ol>
+                <li>Click statement tiles to add them to the profile card</li>
+                <li>Click "Flip Card" to add detailed notes on the back</li>
+                <li>Fill in challenge levels and additional information</li>
+                <li>Download as PDF for printing and cutting</li>
+            </ol>
+        </div>
+
+        <div class="main-content">
+            <div class="tiles-section">
+                <h2>Statement Tiles</h2>
+                <div class="tiles-grid" id="tilesGrid">
+                    </div>
+                <p style="color: #666; font-size: 0.9rem; margin-top: 15px;">
+                    💡 Click tiles to add them to the profile card. Click tiles in the card to remove them.
+                </p>
+            </div>
+
+            <div class="profile-section">
+                <div class="profile-card">
+                    <div class="card-inner" id="cardInner">
+                        <div class="card-front" id="cardFront">
+                            <div class="card-header">
+                                <div class="student-initial" contenteditable="true">XX</div>
+                                <div class="card-title-section">
+                                    <div class="card-title" contenteditable="true">Make it<br>Easier to See!</div>
+                                </div>
+                                <div class="logo">💡</div>
+                            </div>
+                            <div class="drop-zone empty" id="dropZone">
+                                </div>
+                        </div>
+                        
+                        <div class="card-back" id="cardBack">
+                            <div class="back-header">Need to know:</div>
+                            <div class="challenge-section">
+                                <div class="challenge-item">
+                                    <div class="challenge-dot red"></div>
+                                    <input type="text" class="text-input" placeholder="Very challenging..." id="redChallenge">
+                                </div>
+                                <div class="challenge-item">
+                                    <div class="challenge-dot orange"></div>
+                                    <input type="text" class="text-input" placeholder="Challenging..." id="orangeChallenge">
+                                </div>
+                                <div class="challenge-item">
+                                    <div class="challenge-dot green"></div>
+                                    <input type="text" class="text-input" placeholder="Comfortable..." id="greenChallenge">
+                                </div>
+                            </div>
+                            <div class="vision-target">
+                                <h4>Vision Target/Notes</h4>
+                                <input type="text" class="text-input" placeholder="Specific target or goal..." id="visionTarget">
+                            </div>
+                            <div class="back-footer">Find more info here:</div>
+                            <div class="contact-section">
+                                <input type="text" class="text-input" placeholder="Contact info..." id="contactInfo" style="max-width: 200px;">
+                            </div>
+                            <div class="bottom-text">
+                                Created by Vision in 60 Seconds D.Downes 2025
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="controls">
+                    <button class="btn btn-secondary" onclick="flipCard()">Flip Card</button>
+                    <button class="btn btn-primary" onclick="downloadPDF()">Download PDF</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="print-cards-container" id="printCardsContainer" style="display: none;">
+        </div>
+
+    <script>
+        const statements = [
+            "Better on Left", "Better on Right", "Show it High", "Better in Centre",
+            "Bring it Close", "Big Bright Bold", "Give me Time", "Keep it short",
+            "Clear the Clutter", "My Vision Varies", "Use Real Objects", "Just One Thing",
+            "Eyes or Ears", "Make it Move", "Keep it Still", "Light it Up",
+            "Control the Light", "Talk like Radio", "Sound Cues Vision"
+        ];
+
+        let droppedTiles = [];
+        let isFlipped = false;
+        let selectedTiles = new Set();
+
+        // Fixed height for printing cards - adjusted for ~8 statements
+        // 100mm is approximately 378px.
+        const CARD_FIXED_HEIGHT_PX = 380; // This value directly controls the card height for PDF/print
+        const CARD_FIXED_WIDTH_PX = 420; // This is the standard card width in browser
+
+        function initializeTiles() {
+            const tilesGrid = document.getElementById('tilesGrid');
+            if (!tilesGrid) { 
+                console.error("Error: 'tilesGrid' element not found.");
+                return;
+            }
+            statements.forEach((statement, index) => {
+                const tile = document.createElement('div');
+                tile.className = 'statement-tile';
+                tile.textContent = statement;
+                tile.dataset.statement = statement;
+                tile.dataset.colorIndex = index % 7;
+                
+                tile.addEventListener('click', () => {
+                    toggleTile(statement, index % 7, tile);
+                });
+                
+                tilesGrid.appendChild(tile);
+            });
+        }
+
+        function toggleTile(statement, colorIndex, tileElement) {
+            if (selectedTiles.has(statement)) {
+                selectedTiles.delete(statement);
+                tileElement.classList.remove('selected');
+                droppedTiles = droppedTiles.filter(tile => tile.statement !== statement);
+            } else {
+                selectedTiles.add(statement);
+                tileElement.classList.add('selected');
+                droppedTiles.push({statement, colorIndex});
+            }
+            updateDropZone();
+        }
+
+        function removeTile(statementToRemove) {
+            droppedTiles = droppedTiles.filter(tile => tile.statement !== statementToRemove);
+            selectedTiles.delete(statementToRemove); 
+            
+            const originalTileElement = document.querySelector(`.statement-tile[data-statement="${statementToRemove}"]`);
+            if (originalTileElement) {
+                originalTileElement.classList.remove('selected');
+            }
+            
+            updateDropZone();
+        }
+
+        function updateDropZone() {
+            const dropZone = document.getElementById('dropZone');
+            if (!dropZone) { 
+                console.error("Error: 'dropZone' element not found.");
+                return;
+            }
+            
+            if (droppedTiles.length === 0) {
+                dropZone.classList.add('empty');
+                dropZone.innerHTML = '';
+            } else {
+                dropZone.classList.remove('empty');
+                dropZone.innerHTML = '';
+                
+                droppedTiles.forEach(tileData => {
+                    const tile = document.createElement('div');
+                    tile.className = 'dropped-tile';
+                    tile.textContent = tileData.statement;
+                    tile.dataset.color = tileData.colorIndex;
+                    tile.onclick = () => removeTile(tileData.statement);
+                    dropZone.appendChild(tile);
+                });
+            }
+        }
+
+        function flipCard() {
+            const cardInner = document.getElementById('cardInner');
+            if (cardInner) { 
+                isFlipped = !isFlipped;
+                cardInner.classList.toggle('flipped');
+            } else {
+                console.error("Error: 'cardInner' element not found for flipping.");
+            }
+        }
+
+        async function downloadPDF() {
+            if (typeof window.jsPDF === 'undefined' || typeof html2canvas === 'undefined') {
+                triggerNativePrint();
+                return;
+            }
+
+            try {
+                const cardInner = document.getElementById('cardInner');
+                const originalCardFront = document.getElementById('cardFront');
+                const originalCardBack = document.getElementById('cardBack');
+
+                if (!cardInner || !originalCardFront || !originalCardBack) {
+                    console.error("Error: Required card elements not found for PDF generation.");
+                    triggerNativePrint();
+                    return;
+                }
+
+                const wasFlipped = cardInner.classList.contains('flipped');
+                if (wasFlipped) {
+                    cardInner.classList.remove('flipped');
+                    await new Promise(resolve => setTimeout(resolve, 50)); 
+                }
+
+                // Create a single temporary container for rendering clones before html2canvas capture
+                const tempContainer = createTempContainer();
+                document.body.appendChild(tempContainer);
+
+                const cardFrontClone = originalCardFront.cloneNode(true);
+                const cardBackClone = originalCardBack.cloneNode(true);
+
+                // Append both clones to the same temporary container
+                tempContainer.appendChild(cardFrontClone);
+                tempContainer.appendChild(cardBackClone);
+
+                // Prepare clones (replace inputs, handle contenteditables, ensure overflow visible)
+                prepareCardForCapture(originalCardFront, cardFrontClone);
+                prepareCardForCapture(originalCardBack, cardBackClone);
+                
+                // Set the fixed height directly after preparation
+                cardFrontClone.style.height = `${CARD_FIXED_HEIGHT_PX}px`;
+                cardFrontClone.style.minHeight = `${CARD_FIXED_HEIGHT_PX}px`; // Reinforce
+                cardBackClone.style.height = `${CARD_FIXED_HEIGHT_PX}px`;
+                cardBackClone.style.minHeight = `${CARD_FIXED_HEIGHT_PX}px`; // Reinforce
+
+                // Give a brief moment for layout to settle after setting fixed height
+                await new Promise(resolve => setTimeout(resolve, 100));
+
+                const { jsPDF } = window.jsPDF;
+                const pdf = new jsPDF({
+                    orientation: 'landscape',
+                    unit: 'mm',
+                    format: 'a4'
+                });
+
+                const pxToMm = (px) => px * 0.264583;
+
+                const cardWidthMM = pxToMm(CARD_FIXED_WIDTH_PX);
+                const cardHeightMM = pxToMm(CARD_FIXED_HEIGHT_PX);
+                const spacingMM = 20; 
+
+                const totalCardsWidthMM = cardWidthMM * 2 + spacingMM;
+
+                const startX = (pdf.internal.pageSize.getWidth() - totalCardsWidthMM) / 2;
+                const startY = (pdf.internal.pageSize.getHeight() - cardHeightMM) / 2;
+
+
+                const frontCanvas = await html2canvas(cardFrontClone, {
+                    scale: 2, 
+                    useCORS: true,
+                    backgroundColor: '#ffffff',
+                    width: CARD_FIXED_WIDTH_PX,
+                    height: CARD_FIXED_HEIGHT_PX 
+                });
+
+                const backCanvas = await html2canvas(cardBackClone, {
+                    scale: 2,
+                    useCORS: true,
+                    backgroundColor: '#ffffff',
+                    width: CARD_FIXED_WIDTH_PX,
+                    height: CARD_FIXED_HEIGHT_PX 
+                });
+
+                pdf.setFontSize(16);
+                pdf.setTextColor(50, 50, 50);
+                pdf.text('Vision Profile Cards - Print & Cut', pdf.internal.pageSize.getWidth()/2, 20, { align: 'center' });
+
+                pdf.setFontSize(10);
+                pdf.text('Cut along the dashed lines. Both cards are printed at the same size.', pdf.internal.pageSize.getWidth()/2, 30, { align: 'center' });
+
+                const frontImgData = frontCanvas.toDataURL('image/png');
+                const backImgData = backCanvas.toDataURL('image/png');
+                
+                pdf.addImage(frontImgData, 'PNG', startX, startY, cardWidthMM, cardHeightMM);
+                pdf.addImage(backImgData, 'PNG', startX + cardWidthMM + spacingMM, startY, cardWidthMM, cardHeightMM);
+
+                pdf.setFontSize(12);
+                pdf.setTextColor(100, 100, 100);
+                pdf.text('FRONT', startX + cardWidthMM/2, startY + cardHeightMM + 10, { align: 'center' });
+                pdf.text('BACK', startX + cardWidthMM + spacingMM + cardWidthMM/2, startY + cardHeightMM + 10, { align: 'center' });
+
+                pdf.setDrawColor(150, 150, 150);
+                pdf.setLineWidth(0.3);
+                pdf.setLineDashPattern([2, 2], 0);
+                
+                pdf.rect(startX - 2, startY - 2, cardWidthMM + 4, cardHeightMM + 4);
+                pdf.rect(startX + cardWidthMM + spacingMM - 2, startY - 2, cardWidthMM + 4, cardHeightMM + 4);
+
+                pdf.save('vision-profile-cards.pdf');
+
+                document.body.removeChild(tempContainer); 
+
+                if (wasFlipped) {
+                    cardInner.classList.add('flipped');
+                }
+
+            } catch (error) {
+                console.error('PDF generation failed:', error);
+                if (cardInner && wasFlipped) {
+                    cardInner.classList.add('flipped');
+                }
+                triggerNativePrint();
+            }
+        }
+
+        // createTempContainer now also uses the fixed width/height for better consistency
+        function createTempContainer() {
+            const container = document.createElement('div');
+            container.style.position = 'absolute'; 
+            container.style.left = '-9999px';      
+            container.style.top = '-9999px';
+            container.style.width = `${CARD_FIXED_WIDTH_PX}px`;       
+            container.style.height = `${CARD_FIXED_HEIGHT_PX}px`;       
+            container.style.overflow = 'hidden';  /* Hide temp container content */
+            container.style.backgroundColor = 'white'; 
+            container.style.padding = '15px'; 
+            container.style.boxSizing = 'border-box'; 
+            container.style.fontFamily = "'Poppins', sans-serif"; 
+            return container;
+        }
+
+        // Simplified prepareCardForCapture: no more min-height or flex-grow resets,
+        // just input/contenteditable handling and ensuring overflow is visible for capture.
+        function prepareCardForCapture(originalCardElement, clonedCardElement) {
+            clonedCardElement.style.position = 'relative'; 
+            clonedCardElement.style.transform = 'none'; 
+            clonedCardElement.style.backfaceVisibility = 'visible';
+            clonedCardElement.style.width = `${CARD_FIXED_WIDTH_PX}px`; 
+            clonedCardElement.style.overflow = 'visible'; /* Crucial for html2canvas to capture hidden content */
+            clonedCardElement.style.boxShadow = 'none'; 
+            clonedCardElement.style.padding = getComputedStyle(originalCardElement).padding; 
+
+            // Handle inputs (replace with spans for static text in capture)
+            const originalInputs = originalCardElement.querySelectorAll('input');
+            const clonedInputs = clonedCardElement.querySelectorAll('input');
+            clonedInputs.forEach((clonedInput, index) => {
+                const originalInput = originalInputs[index]; 
+                if (originalInput && originalInput.value) { 
+                    const span = document.createElement('span');
+                    span.textContent = originalInput.value;
+                    const computedStyle = getComputedStyle(originalInput);
+                    // Copy relevant styles for visual fidelity
+                    span.style.fontSize = computedStyle.fontSize;
+                    span.style.color = computedStyle.color;
+                    span.style.padding = computedStyle.padding;
+                    span.style.margin = computedStyle.margin;
+                    span.style.display = computedStyle.display === 'inline' ? 'inline' : 'block'; 
+                    span.style.fontWeight = computedStyle.fontWeight; 
+                    span.style.boxSizing = computedStyle.boxSizing;
+                    span.style.whiteSpace = 'normal'; 
+                    span.style.wordBreak = 'break-word'; 
+                    clonedInput.parentNode.replaceChild(span, clonedInput);
+                } else {
+                    if(clonedInput.parentNode) {
+                        clonedInput.parentNode.removeChild(clonedInput);
+                    }
+                }
+            });
+
+            // Handle contenteditables (remove attribute and copy text)
+            const originalContentEditables = originalCardElement.querySelectorAll('[contenteditable="true"]');
+            const clonedContentEditables = clonedCardElement.querySelectorAll('[contenteditable="true"]');
+            clonedContentEditables.forEach((clonedCE, index) => {
+                const originalCE = originalContentEditables[index];
+                if (originalCE) {
+                    clonedCE.textContent = originalCE.textContent; 
+                    clonedCE.removeAttribute('contenteditable'); 
+                }
+            });
+
+            // Ensure specific sections allow overflow for capture, as their parent has fixed height
+            const dropZone = clonedCardElement.querySelector('.drop-zone');
+            if (dropZone) {
+                dropZone.style.overflow = 'visible'; 
+                // Flex properties will now work within the explicitly set parent height
+            }
+            const challengeSection = clonedCardElement.querySelector('.challenge-section');
+            if (challengeSection) {
+                challengeSection.style.overflow = 'visible';
+                // Flex properties will now work within the explicitly set parent height
+            }
+        }
+        
+        // Native print fallback using the same fixed height principle
+        async function triggerNativePrint() {
+            const originalCardFront = document.getElementById('cardFront');
+            const originalCardBack = document.getElementById('cardBack');
+            const printCardsContainer = document.getElementById('printCardsContainer');
+            const cardInner = document.getElementById('cardInner');
+
+            if (!originalCardFront || !originalCardBack || !printCardsContainer || !cardInner) {
+                console.error("Error: Required card elements or print container not found for native print.");
+                alert("Could not prepare cards for printing. Please ensure all elements are present.");
+                return;
+            }
+
+            printCardsContainer.innerHTML = '';
+            
+            const wasFlipped = cardInner.classList.contains('flipped');
+            if (wasFlipped) {
+                cardInner.classList.remove('flipped');
+                await new Promise(resolve => setTimeout(resolve, 50)); 
+            }
+
+            const cardFrontCloneForPrint = originalCardFront.cloneNode(true);
+            const cardBackCloneForPrint = originalCardBack.cloneNode(true);
+
+            // Prepare clones for print (same logic as for PDF capture)
+            prepareCardForCapture(originalCardFront, cardFrontCloneForPrint);
+            prepareCardForCapture(originalCardBack, cardBackCloneForPrint);
+
+            // Set the fixed height directly for print clones
+            cardFrontCloneForPrint.style.height = `${CARD_FIXED_HEIGHT_PX}px`;
+            cardFrontCloneForPrint.style.minHeight = `${CARD_FIXED_HEIGHT_PX}px`; 
+            cardBackCloneForPrint.style.height = `${CARD_FIXED_HEIGHT_PX}px`;
+            cardBackCloneForPrint.style.minHeight = `${CARD_FIXED_HEIGHT_PX}px`; 
+
+            // Append to the hidden print container
+            printCardsContainer.appendChild(cardFrontCloneForPrint);
+            printCardsContainer.appendChild(cardBackCloneForPrint);
+            
+            printCardsContainer.style.display = 'flex'; 
+            
+            setTimeout(() => {
+                window.print();
+                // Restore display and clear container after print dialog is closed
+                printCardsContainer.style.display = 'none';
+                printCardsContainer.innerHTML = ''; 
+                if (wasFlipped) {
+                    cardInner.classList.add('flipped');
+                }
+            }, 100);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeTiles();
+            updateDropZone();
+        });
+    </script>
+</body>
+</html>
