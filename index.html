@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vision in 60 Seconds! - Premium Edition</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap');
         
@@ -1304,13 +1304,27 @@
 
         // PDF Generation
         async function downloadPDF() {
-            if (typeof window.jsPDF === 'undefined') {
-                alert('PDF library not loaded. Please try again.');
+            // Check if libraries are loaded
+            if (typeof html2canvas === 'undefined') {
+                alert('⚠️ HTML2Canvas library not loaded. Please refresh the page and try again.');
+                console.error('html2canvas not found');
+                return;
+            }
+
+            if (typeof window.jsPDF === 'undefined' && typeof jsPDF === 'undefined') {
+                alert('⚠️ jsPDF library not loaded. Please refresh the page and try again.');
+                console.error('jsPDF not found. Window.jsPDF:', typeof window.jsPDF, 'jsPDF:', typeof jsPDF);
                 return;
             }
 
             try {
-                const { jsPDF } = window.jsPDF;
+                // Try to get jsPDF from either location
+                const { jsPDF } = window.jsPDF || { jsPDF: window.jspdf?.jsPDF };
+                
+                if (!jsPDF) {
+                    throw new Error('jsPDF constructor not found');
+                }
+
                 const pdf = new jsPDF({
                     orientation: 'portrait',
                     unit: 'mm',
@@ -1335,7 +1349,7 @@
 
             } catch (error) {
                 console.error('PDF generation failed:', error);
-                alert('Failed to generate PDF. Please try again.');
+                alert('❌ Failed to generate PDF. Error: ' + error.message + '\n\nPlease refresh the page and try again.');
             }
         }
 
@@ -1639,6 +1653,18 @@
                     saveProfile();
                 }
             });
+
+            // Verify PDF libraries loaded
+            console.log('Library Check:');
+            console.log('- html2canvas:', typeof html2canvas !== 'undefined' ? '✓ Loaded' : '✗ Missing');
+            console.log('- window.jsPDF:', typeof window.jsPDF !== 'undefined' ? '✓ Loaded' : '✗ Missing');
+            console.log('- jsPDF:', typeof jsPDF !== 'undefined' ? '✓ Loaded' : '✗ Missing');
+            
+            if (typeof html2canvas === 'undefined' || (typeof window.jsPDF === 'undefined' && typeof jsPDF === 'undefined')) {
+                console.warn('⚠️ PDF libraries may not have loaded correctly. PDF download may not work.');
+            } else {
+                console.log('✓ All PDF libraries loaded successfully!');
+            }
         });
     </script>
 </body>
