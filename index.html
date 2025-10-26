@@ -920,7 +920,7 @@
                         <!-- Back of Card -->
                         <div class="card-back" id="cardBack">
                             <div class="back-section">
-                                <h3>📋 Need to Know</h3>
+                                <h3>Need to Know</h3>
                                 <div class="challenge-item">
                                     <div class="challenge-dot red"></div>
                                     <input type="text" class="text-input" placeholder="Very challenging situations..." id="redChallenge">
@@ -936,12 +936,12 @@
                             </div>
                             
                             <div class="vision-target back-section">
-                                <h4>🎯 Vision Target / Additional Notes</h4>
+                                <h4>Vision Target / Additional Notes</h4>
                                 <input type="text" class="text-input" placeholder="Specific goals, targets, or important information..." id="visionTarget">
                             </div>
                             
                             <div class="contact-section back-section">
-                                <h3>📞 Contact Information</h3>
+                                <h3>Contact Information</h3>
                                 <input type="text" class="text-input" placeholder="Vision teacher, specialist, or resource..." id="contactInfo" style="text-align: center;">
                             </div>
                             
@@ -1460,13 +1460,13 @@
             
             if (tileCount <= 3) {
                 cardWidthMM = 54; // Credit card width
-                cardHeightMM = 86; // Small
+                cardHeightMM = 100; // Taller small
             } else if (tileCount <= 6) {
                 cardWidthMM = 76; // Medium width
-                cardHeightMM = 115; // Taller medium
+                cardHeightMM = 130; // Much taller medium
             } else {
                 cardWidthMM = 89; // Large width
-                cardHeightMM = 140; // Much taller for lots of content
+                cardHeightMM = 160; // Extra tall for lots of content
             }
 
             const pageWidth = pdf.internal.pageSize.getWidth();
@@ -1510,9 +1510,11 @@
             prepareCardForCapture(originalCardBack, cardBackClone);
             cardBackClone.style.width = `${cardWidthMM * 3.78}px`;
             cardBackClone.style.height = `${cardHeightMM * 3.78}px`;
+            cardBackClone.style.minHeight = `${cardHeightMM * 3.78}px`; // Ensure minimum height
             cardBackClone.style.position = 'relative'; // Make it visible
             cardBackClone.style.transform = 'none'; // Remove rotation
             cardBackClone.style.display = 'flex'; // Ensure it's displayed
+            cardBackClone.style.padding = '20px'; // Ensure padding for content
             tempContainer.appendChild(cardBackClone);
 
             await new Promise(resolve => setTimeout(resolve, 100));
@@ -1684,6 +1686,24 @@
             sections.forEach(section => {
                 section.style.marginBottom = '12px';
             });
+
+            // Ensure contact section is visible
+            const contactSection = clonedCardElement.querySelector('.contact-section');
+            if (contactSection) {
+                contactSection.style.marginBottom = '15px';
+                contactSection.style.padding = '10px';
+                contactSection.style.background = 'rgba(102, 126, 234, 0.05)';
+                contactSection.style.borderRadius = '8px';
+            }
+
+            // Ensure bottom text is visible
+            const bottomText = clonedCardElement.querySelector('.bottom-text');
+            if (bottomText) {
+                bottomText.style.marginTop = '15px';
+                bottomText.style.fontSize = '0.7rem';
+                bottomText.style.color = '#999';
+                bottomText.style.textAlign = 'center';
+            }
 
             // Remove size indicator
             const sizeIndicator = clonedCardElement.querySelector('.size-indicator');
