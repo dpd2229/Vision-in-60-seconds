@@ -280,7 +280,7 @@
             box-shadow: 0 25px 50px rgba(0,0,0,0.2);
             display: flex;
             flex-direction: column;
-            border: 4px solid #1a237e;
+            border: 8px solid #1a237e;
             overflow: hidden;
         }
 
@@ -1419,7 +1419,7 @@
             
             pdf.setFontSize(12);
             pdf.setFont(undefined, 'bold');
-            pdf.text('📋 How to Use This Profile:', 40, 190);
+            pdf.text('How to Use This Profile:', 40, 190);
             
             pdf.setFont(undefined, 'normal');
             pdf.setFontSize(10);
@@ -1510,6 +1510,9 @@
             prepareCardForCapture(originalCardBack, cardBackClone);
             cardBackClone.style.width = `${cardWidthMM * 3.78}px`;
             cardBackClone.style.height = `${cardHeightMM * 3.78}px`;
+            cardBackClone.style.position = 'relative'; // Make it visible
+            cardBackClone.style.transform = 'none'; // Remove rotation
+            cardBackClone.style.display = 'flex'; // Ensure it's displayed
             tempContainer.appendChild(cardBackClone);
 
             await new Promise(resolve => setTimeout(resolve, 100));
@@ -1612,6 +1615,8 @@
             clonedCardElement.style.backfaceVisibility = 'visible';
             clonedCardElement.style.overflow = 'hidden'; // Changed to hidden for PDF
             clonedCardElement.style.boxShadow = 'none';
+            clonedCardElement.style.display = 'flex';
+            clonedCardElement.style.flexDirection = 'column';
             
             // Scale down fonts slightly for better fit in print
             clonedCardElement.style.fontSize = '0.9em';
@@ -1621,6 +1626,7 @@
             if (dropZone) {
                 dropZone.style.gap = '6px';
                 dropZone.style.padding = '12px';
+                dropZone.style.minHeight = '0'; // Allow it to shrink
             }
 
             // Scale down dropped tiles
