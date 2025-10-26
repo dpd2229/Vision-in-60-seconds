@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vision in 60 Seconds!</title>
+    <title>Vision in 60 Seconds! - Premium Edition</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap');
         
         * {
             margin: 0;
@@ -20,125 +20,251 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255,255,255,0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
 
         .header {
             text-align: center;
             color: white;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .header h1 {
-            font-family: 'Poppins', sans-serif;
-            font-weight: 600;
-            font-size: 2.5rem;
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: 3.5rem;
             margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+            letter-spacing: -1px;
         }
 
-        .header p {
+        .header .subtitle {
             font-family: 'Poppins', sans-serif;
             font-weight: 300;
-            font-size: 1.2rem;
-            opacity: 0.9;
+            font-size: 1.3rem;
+            opacity: 0.95;
+            letter-spacing: 0.5px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            border: 1px solid rgba(255,255,255,0.3);
+            font-weight: 500;
         }
 
         .main-content {
             display: grid;
-            grid-template-columns: 1fr 400px;
+            grid-template-columns: 1fr 480px;
             gap: 30px;
             align-items: start;
         }
 
-        .tiles-section {
+        .left-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .panel {
             background: white;
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            animation: fadeInUp 0.8s ease;
         }
 
-        .tiles-section h2 {
-            color: #333;
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .panel h2 {
+            color: #1a237e;
             margin-bottom: 20px;
-            font-size: 1.5rem;
+            font-size: 1.6rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .tiles-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        .panel h2::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 2px;
+        }
+
+        /* Category Filters */
+        .category-filters {
+            display: flex;
             gap: 10px;
             margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .category-btn {
+            padding: 10px 20px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            color: #666;
+        }
+
+        .category-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .category-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: transparent;
+        }
+
+        /* Tiles Grid */
+        .tiles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 12px;
         }
 
         .statement-tile {
             background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
             color: white;
-            padding: 15px 10px;
-            border-radius: 12px;
+            padding: 18px 12px;
+            border-radius: 16px;
             text-align: center;
             cursor: pointer;
             user-select: none;
-            font-weight: bold;
+            font-weight: 600;
             font-size: 0.9rem;
             transition: all 0.3s ease;
-            border: 2px solid transparent;
+            border: 3px solid transparent;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 70px;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            gap: 8px;
+            min-height: 85px;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+            position: relative;
+            overflow: hidden;
         }
 
-        .statement-tile:hover, .statement-tile:active {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        .statement-tile::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 100%);
+            pointer-events: none;
+        }
+
+        .statement-tile .icon {
+            font-size: 1.5rem;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+
+        .statement-tile:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
         }
 
         .statement-tile.selected {
             background: linear-gradient(135deg, #FF6B6B 0%, #FF5252 100%);
             transform: scale(0.95);
+            border-color: rgba(255,255,255,0.5);
         }
 
-        .statement-tile:nth-child(2n) { background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%); }
-        .statement-tile:nth-child(3n) { background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%); }
-        .statement-tile:nth-child(4n) { background: linear-gradient(135deg, #E91E63 0%, #C2185B 100%); }
-        .statement-tile:nth-child(5n) { background: linear-gradient(135deg, #9C27B0 0%, #7B1FA2 100%); }
-        .statement-tile:nth-child(6n) { background: linear-gradient(135deg, #00BCD4 0%, #0097A7 100%); }
-        .statement-tile:nth-child(7n) { background: linear-gradient(135deg, #FF5722 0%, #D84315 100%); }
+        /* Color variations for tiles */
+        .statement-tile[data-category="positioning"] { background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%); }
+        .statement-tile[data-category="size"] { background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%); }
+        .statement-tile[data-category="clarity"] { background: linear-gradient(135deg, #9C27B0 0%, #7B1FA2 100%); }
+        .statement-tile[data-category="timing"] { background: linear-gradient(135deg, #00BCD4 0%, #0097A7 100%); }
+        .statement-tile[data-category="sensory"] { background: linear-gradient(135deg, #E91E63 0%, #C2185B 100%); }
+        .statement-tile[data-category="lighting"] { background: linear-gradient(135deg, #FF5722 0%, #D84315 100%); }
+        .statement-tile[data-category="motion"] { background: linear-gradient(135deg, #607D8B 0%, #455A64 100%); }
 
-        .statement-tile:nth-child(2n).selected { background: linear-gradient(135deg, #FF6B6B 0%, #FF5252 100%); }
-        .statement-tile:nth-child(3n).selected { background: linear-gradient(135deg, #FF6B6B 0%, #FF5252 100%); }
-        .statement-tile:nth-child(4n).selected { background: linear-gradient(135deg, #FF6B6B 0%, #FF5252 100%); }
-        .statement-tile:nth-child(5n).selected { background: linear-gradient(135deg, #FF6B6B 0%, #FF5252 100%); }
-        .statement-tile:nth-child(6n).selected { background: linear-gradient(135deg, #FF6B6B 0%, #FF5252 100%); }
-        .statement-tile:nth-child(7n).selected { background: linear-gradient(135deg, #FF6B6B 0%, #FF5252 100%); }
+        .statement-tile.selected {
+            background: linear-gradient(135deg, #FF6B6B 0%, #FF5252 100%) !important;
+        }
 
+        /* Profile Section */
         .profile-section {
             position: sticky;
             top: 20px;
+            padding-bottom: 100px;
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
         }
 
         .profile-card {
-            width: 420px;
-            min-height: 280px; /* Base min-height for display */
-            margin: 0 auto;
-            perspective: 1000px;
-            margin-bottom: 20px;
+            width: 100%;
+            perspective: 1200px;
+            margin-bottom: 30px;
         }
 
         .card-inner {
             position: relative;
             width: 100%;
-            height: 100%; 
-            text-align: center;
-            transition: transform 0.8s;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
             transform-style: preserve-3d;
+            margin-bottom: 20px;
         }
 
         .card-inner.flipped {
@@ -146,105 +272,142 @@
         }
 
         .card-front, .card-back {
-            position: absolute;
             width: 100%;
-            min-height: 280px; /* Base min-height for display */
             backface-visibility: hidden;
-            border-radius: 15px;
-            border: 4px solid #1a237e;
+            border-radius: 20px;
             background: white;
-            padding: 15px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+            padding: 25px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
             display: flex;
             flex-direction: column;
-            overflow: hidden; 
+            border: 4px solid #1a237e;
+            overflow: hidden;
+        }
+
+        .card-front {
+            position: relative;
+            z-index: 2;
+        }
+
+        .card-front::before, .card-back::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 50%, #667eea 100%);
         }
 
         .card-back {
+            position: absolute;
+            top: 0;
+            left: 0;
             transform: rotateY(180deg);
+            z-index: 1;
         }
+
+        /* When flipped, back comes to front */
+        .card-inner.flipped .card-front {
+            z-index: 1;
+        }
+
+        .card-inner.flipped .card-back {
+            z-index: 2;
+        }
+
+        /* Card sizing based on tile count */
+        .card-size-small .card-front, 
+        .card-size-small .card-back { min-height: 320px; }
+        
+        .card-size-small { min-height: 320px; }
+        
+        .card-size-medium .card-front, 
+        .card-size-medium .card-back { min-height: 420px; }
+        
+        .card-size-medium { min-height: 420px; }
+        
+        .card-size-large .card-front, 
+        .card-size-large .card-back { min-height: 520px; }
+        
+        .card-size-large { min-height: 520px; }
 
         .card-header {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 12px;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 15px;
+        }
+
+        .student-initial {
+            width: 50px;
+            height: 50px;
+            border: 3px solid #1a237e;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA000 100%);
             flex-shrink: 0;
-            height: 40px;
+            font-size: 18px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            color: #1a237e;
         }
 
         .card-title-section {
             flex: 1;
             text-align: center;
-            margin: 0 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
         .card-title {
-            font-family: 'Poppins', sans-serif;
-            font-weight: 600;
-            color: #333;
-            font-size: 1.1rem;
-            line-height: 1.1;
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            color: #1a237e;
+            font-size: 1.4rem;
+            line-height: 1.2;
             margin: 0;
         }
 
-        .student-initial {
-            width: 35px;
-            height: 35px;
-            border: 2px solid #333;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            background: #FFF59D;
-            flex-shrink: 0;
-            font-size: 14px;
-        }
-
         .logo {
-            width: 35px;
-            height: 35px;
-            background: linear-gradient(135deg, #FFD700 0%, #FFA000 100%);
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
-            font-size: 16px;
+            font-size: 24px;
             flex-shrink: 0;
             color: white;
-            border: 2px solid #333;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
 
         .drop-zone {
-            flex: 1; /* Allow drop-zone to expand within fixed height */
-            border: 2px dashed #ccc;
-            border-radius: 12px;
+            flex: 1;
+            border: 3px dashed #d0d0d0;
+            border-radius: 16px;
             display: flex;
             flex-wrap: wrap;
-            gap: 6px;
-            padding: 10px;
+            gap: 8px;
+            padding: 15px;
             align-items: flex-start;
             align-content: flex-start;
-            background: linear-gradient(135deg, #f8f9ff 0%, #f0f8f0 100%);
+            background: linear-gradient(135deg, #f8f9ff 0%, #fff8f0 100%);
             transition: all 0.3s ease;
+            min-height: 150px;
             position: relative;
-            min-height: 0; /* Allow flex to manage height */
-            overflow-y: auto; /* Allow scrolling if content overflows in the main view */
         }
 
         .drop-zone.drag-over {
-            border-color: #4CAF50;
-            background: linear-gradient(135deg, #f0f8f0 0%, #e8f5e8 100%);
-            transform: scale(1.02);
+            border-color: #667eea;
+            background: linear-gradient(135deg, #f0f4ff 0%, #fff0f8 100%);
+            transform: scale(1.01);
         }
 
         .drop-zone.empty::before {
-            content: "Click tiles to add them here";
+            content: "✨ Click tiles to add them here";
             color: #999;
             font-style: italic;
             position: absolute;
@@ -252,76 +415,87 @@
             left: 50%;
             transform: translate(-50%, -50%);
             pointer-events: none;
-            font-size: 0.9rem;
+            font-size: 1rem;
+            text-align: center;
+            width: 80%;
         }
 
         .dropped-tile {
             color: white;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 0.8rem;
-            font-weight: bold;
+            padding: 10px 16px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
             cursor: pointer;
             position: relative;
-            border: 2px solid rgba(255,255,255,0.2);
             transition: all 0.3s ease;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-            line-height: 1.2;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+            line-height: 1.3;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
         }
 
         .dropped-tile:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.25);
         }
 
         .dropped-tile:hover::after {
             content: "×";
             position: absolute;
-            top: -8px;
-            right: -8px;
+            top: -10px;
+            right: -10px;
             background: #f44336;
             color: white;
             border-radius: 50%;
-            width: 18px;
-            height: 18px;
-            font-size: 11px;
+            width: 22px;
+            height: 22px;
+            font-size: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            border: 2px solid white;
         }
 
         /* Preserve original tile colors when dropped */
-        .dropped-tile[data-color="0"] { background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); }
-        .dropped-tile[data-color="1"] { background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%); }
-        .dropped-tile[data-color="2"] { background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%); }
-        .dropped-tile[data-color="3"] { background: linear-gradient(135deg, #E91E63 0%, #C2185B 100%); }
-        .dropped-tile[data-color="4"] { background: linear-gradient(135deg, #9C27B0 0%, #7B1FA2 100%); }
-        .dropped-tile[data-color="5"] { background: linear-gradient(135deg, #00BCD4 0%, #0097A7 100%); }
-        .dropped-tile[data-color="6"] { background: linear-gradient(135deg, #FF5722 0%, #D84315 100%); }
+        .dropped-tile[data-category="visual"] { background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); }
+        .dropped-tile[data-category="positioning"] { background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%); }
+        .dropped-tile[data-category="size"] { background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%); }
+        .dropped-tile[data-category="clarity"] { background: linear-gradient(135deg, #9C27B0 0%, #7B1FA2 100%); }
+        .dropped-tile[data-category="timing"] { background: linear-gradient(135deg, #00BCD4 0%, #0097A7 100%); }
+        .dropped-tile[data-category="sensory"] { background: linear-gradient(135deg, #E91E63 0%, #C2185B 100%); }
+        .dropped-tile[data-category="lighting"] { background: linear-gradient(135deg, #FF5722 0%, #D84315 100%); }
+        .dropped-tile[data-category="motion"] { background: linear-gradient(135deg, #607D8B 0%, #455A64 100%); }
 
-        .challenge-section {
+        /* Card Back Styling */
+        .back-section {
+            margin-bottom: 20px;
+        }
+
+        .back-section h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #1a237e;
+            margin-bottom: 12px;
             display: flex;
-            flex-direction: column;
-            gap: 6px;
-            margin-bottom: 10px;
-            flex: 1; /* Allow challenge section to expand within fixed height */
+            align-items: center;
+            gap: 8px;
         }
 
         .challenge-item {
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 0.75rem;
+            gap: 12px;
+            margin-bottom: 12px;
         }
 
         .challenge-dot {
-            width: 8px;
-            height: 8px;
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
             flex-shrink: 0;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
         }
 
         .challenge-dot.red { background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%); }
@@ -330,196 +504,338 @@
 
         .text-input {
             flex: 1;
-            padding: 4px 6px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 0.65rem;
-            transition: border-color 0.3s ease;
+            padding: 10px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
         }
 
         .text-input:focus {
             outline: none;
-            border-color: #4CAF50;
-            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
         .vision-target {
-            border: 2px dashed #666;
-            padding: 6px;
-            border-radius: 8px;
-            margin: 8px 0;
-            text-align: center;
+            border: 2px dashed #667eea;
+            padding: 15px;
+            border-radius: 12px;
             background: rgba(102, 126, 234, 0.05);
-            flex-shrink: 0; /* Prevent shrinking so it maintains its size */
         }
 
         .vision-target h4 {
-            font-size: 0.7rem;
-            margin-bottom: 4px;
-            color: #333;
-        }
-
-        .back-header {
-            font-weight: bold;
-            margin-bottom: 8px;
-            font-size: 0.8rem;
-            flex-shrink: 0;
-        }
-
-        .back-footer {
-            font-size: 0.65rem;
-            font-weight: bold;
-            margin: 4px 0;
-            flex-shrink: 0;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            color: #1a237e;
+            font-weight: 700;
         }
 
         .contact-section {
             text-align: center;
-            margin-bottom: 6px;
-            flex-shrink: 0;
+            padding: 15px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+            border-radius: 12px;
         }
 
         .bottom-text {
-            font-size: 0.45rem;
+            font-size: 0.7rem;
             color: #999;
             text-align: center;
-            margin-top: auto; /* Push to the bottom */
-            flex-shrink: 0;
+            margin-top: 15px;
+            font-weight: 500;
         }
 
+        /* Controls */
         .controls {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin-top: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 30px;
+            position: relative;
+            z-index: 10;
         }
 
         .btn {
-            padding: 12px 24px;
+            padding: 14px 24px;
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
             cursor: pointer;
             font-family: 'Poppins', sans-serif;
-            font-weight: 500;
+            font-weight: 600;
             transition: all 0.3s ease;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-        }
-
-        .btn-primary {
-            background: #4CAF50;
-            color: white;
-        }
-
-        .btn-secondary {
-            background: #2196F3;
-            color: white;
+            font-size: 0.85rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
         }
 
         .btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 6px 25px rgba(0,0,0,0.2);
         }
 
-        .instructions {
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 30px;
+        .btn-primary {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
             color: white;
         }
 
+        .btn-secondary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-tertiary {
+            background: white;
+            color: #1a237e;
+            border: 2px solid #1a237e;
+        }
+
+        .btn-full {
+            grid-column: 1 / -1;
+        }
+
+        /* Saved Profiles */
+        .saved-profiles {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .saved-profile-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #f0f4f8 100%);
+            border-radius: 12px;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .saved-profile-item:hover {
+            border-color: #667eea;
+            transform: translateX(4px);
+        }
+
+        .profile-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA000 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            color: #1a237e;
+            flex-shrink: 0;
+        }
+
+        .profile-details {
+            flex: 1;
+        }
+
+        .profile-name {
+            font-weight: 600;
+            color: #1a237e;
+            font-size: 0.95rem;
+        }
+
+        .profile-meta {
+            font-size: 0.75rem;
+            color: #666;
+        }
+
+        .profile-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .icon-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: none;
+            background: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .icon-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .icon-btn.delete {
+            color: #f44336;
+        }
+
+        .icon-btn.load {
+            color: #667eea;
+        }
+
+        /* Instructions */
+        .instructions {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 30px;
+            color: white;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
         .instructions h3 {
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            font-weight: 700;
         }
 
-        .instructions ol {
-            margin-left: 20px;
+        .instructions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
         }
 
-        .instructions li {
-            margin-bottom: 5px;
+        .instruction-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
         }
 
-        @media (max-width: 768px) {
+        .instruction-number {
+            width: 32px;
+            height: 32px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .instruction-text {
+            flex: 1;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
             .main-content {
                 grid-template-columns: 1fr;
                 gap: 20px;
             }
             
-            .profile-card {
-                width: 100%;
-                max-width: 420px;
-            }
-            
-            .header h1 {
-                font-size: 2rem;
-            }
-            
-            .tiles-grid {
-                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            .profile-section {
+                position: static;
             }
         }
 
-        @media print {
-            * {
-                -webkit-print-color-adjust: exact !important;
-                color-adjust: exact !important;
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5rem;
             }
             
-            body {
-                margin: 0;
-                padding: 0;
-                background: white !important;
-                -ms-overflow-style: none;  /* IE and Edge */
-                scrollbar-width: none;  /* Firefox */
+            .tiles-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
             }
 
-            body::-webkit-scrollbar {
-                display: none; /* Chrome, Safari, Opera*/
+            .controls {
+                grid-template-columns: 1fr;
             }
-            
-            .container, .main-content, .tiles-section, .profile-section, .instructions, .header, .controls {
-                display: none !important;
-            }
+        }
 
-            /* New print container to hold cards side-by-side */
-            .print-cards-container {
-                display: flex; /* Use flexbox to lay out cards */
-                justify-content: center; /* Center them on the page */
-                align-items: flex-start; /* Align to the top if heights differ */
-                gap: 20mm; /* Spacing between the two cards in print */
-                width: 100%; /* Take full width of print page */
-                height: 100vh; /* Take full height to center content */
-                margin: 0; /* Remove default body margins */
-                padding: 10mm; /* Add some padding around the print area */
-                box-sizing: border-box; /* Include padding in element's total width and height */
-            }
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
 
-            /* Ensure cards take appropriate print size */
-            .card-front, .card-back {
-                position: static !important; /* Important for print layout */
-                transform: none !important; /* Remove any transforms */
-                width: 120mm; /* Fixed width for print */
-                height: 100mm !important; /* FIXED HEIGHT FOR PRINT (approx 378px) */
-                min-height: 100mm !important; /* Reinforce fixed height */
-                border: 2px solid #333; /* Visual border for cutting */
-                box-shadow: none !important;
-                page-break-inside: avoid; /* Prevent page breaks inside cards */
-                margin: 0; /* Remove any existing margins */
-            }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
 
-            .card-inner {
-                /* Ensure card-inner doesn't interfere with print layout */
-                position: static !important;
-                transform: none !important;
-                height: auto !important;
-            }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+        }
 
-            .card-front .drop-zone, .card-back .challenge-section {
-                overflow: visible !important; /* Ensure content is not hidden in print */
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        }
+
+        /* Modal for save dialog */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            animation: modalPop 0.3s ease;
+        }
+
+        @keyframes modalPop {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
             }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .modal h3 {
+            color: #1a237e;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .size-indicator {
+            display: inline-block;
+            padding: 4px 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 10px;
         }
     </style>
 </head>
@@ -527,126 +843,241 @@
     <div class="container">
         <div class="header">
             <h1>Vision in 60 Seconds!</h1>
-            <p>Create personalized vision profiles for students</p>
+            <p class="subtitle">Create Premium Vision Profiles for Students with CVI</p>
+            <span class="badge">✨ Premium Edition</span>
         </div>
 
         <div class="instructions">
-            <h3>How to use:</h3>
-            <ol>
-                <li>Click statement tiles to add them to the profile card</li>
-                <li>Click "Flip Card" to add detailed notes on the back</li>
-                <li>Fill in challenge levels and additional information</li>
-                <li>Download as PDF for printing and cutting</li>
-            </ol>
+            <h3>🎯 Quick Start Guide</h3>
+            <div class="instructions-grid">
+                <div class="instruction-item">
+                    <div class="instruction-number">1</div>
+                    <div class="instruction-text">Click tiles to select strategies that help the student</div>
+                </div>
+                <div class="instruction-item">
+                    <div class="instruction-number">2</div>
+                    <div class="instruction-text">Flip the card to add detailed notes and challenge levels</div>
+                </div>
+                <div class="instruction-item">
+                    <div class="instruction-number">3</div>
+                    <div class="instruction-text">Save profiles for later or download as professional PDF</div>
+                </div>
+                <div class="instruction-item">
+                    <div class="instruction-number">4</div>
+                    <div class="instruction-text">Print and cut cards for classroom reference</div>
+                </div>
+            </div>
         </div>
 
         <div class="main-content">
-            <div class="tiles-section">
-                <h2>Statement Tiles</h2>
-                <div class="tiles-grid" id="tilesGrid">
+            <div class="left-panel">
+                <!-- Statement Tiles Panel -->
+                <div class="panel">
+                    <h2>Visual Strategy Library</h2>
+                    
+                    <div class="category-filters">
+                        <button class="category-btn active" data-category="all">All Strategies</button>
+                        <button class="category-btn" data-category="positioning">📍 Position</button>
+                        <button class="category-btn" data-category="size">📏 Size</button>
+                        <button class="category-btn" data-category="lighting">💡 Light</button>
+                        <button class="category-btn" data-category="timing">⏱️ Time</button>
+                        <button class="category-btn" data-category="clarity">🎯 Clarity</button>
                     </div>
-                <p style="color: #666; font-size: 0.9rem; margin-top: 15px;">
-                    💡 Click tiles to add them to the profile card. Click tiles in the card to remove them.
-                </p>
+
+                    <div class="tiles-grid" id="tilesGrid"></div>
+                </div>
+
+                <!-- Saved Profiles Panel -->
+                <div class="panel">
+                    <h2>Saved Profiles</h2>
+                    <div class="saved-profiles" id="savedProfiles">
+                        <p style="color: #999; text-align: center; padding: 20px; font-style: italic;">
+                            No saved profiles yet. Create your first profile!
+                        </p>
+                    </div>
+                </div>
             </div>
 
+            <!-- Profile Card Section -->
             <div class="profile-section">
-                <div class="profile-card">
-                    <div class="card-inner" id="cardInner">
+                <div class="profile-card" id="profileCard">
+                    <div class="card-inner card-size-small" id="cardInner">
+                        <!-- Front of Card -->
                         <div class="card-front" id="cardFront">
                             <div class="card-header">
-                                <div class="student-initial" contenteditable="true">XX</div>
+                                <div class="student-initial" contenteditable="true" id="studentInitial">JS</div>
                                 <div class="card-title-section">
-                                    <div class="card-title" contenteditable="true">Make it<br>Easier to See!</div>
+                                    <div class="card-title" contenteditable="true" id="cardTitle">Make it<br>Easier to See!</div>
                                 </div>
-                                <div class="logo">💡</div>
+                                <div class="logo">👁️</div>
                             </div>
-                            <div class="drop-zone empty" id="dropZone">
-                                </div>
+                            <div class="drop-zone empty" id="dropZone"></div>
+                            <div style="text-align: center; margin-top: 10px;">
+                                <span class="size-indicator" id="cardSizeIndicator">Smart Size</span>
+                            </div>
                         </div>
                         
+                        <!-- Back of Card -->
                         <div class="card-back" id="cardBack">
-                            <div class="back-header">Need to know:</div>
-                            <div class="challenge-section">
+                            <div class="back-section">
+                                <h3>📋 Need to Know</h3>
                                 <div class="challenge-item">
                                     <div class="challenge-dot red"></div>
-                                    <input type="text" class="text-input" placeholder="Very challenging..." id="redChallenge">
+                                    <input type="text" class="text-input" placeholder="Very challenging situations..." id="redChallenge">
                                 </div>
                                 <div class="challenge-item">
                                     <div class="challenge-dot orange"></div>
-                                    <input type="text" class="text-input" placeholder="Challenging..." id="orangeChallenge">
+                                    <input type="text" class="text-input" placeholder="Moderately challenging..." id="orangeChallenge">
                                 </div>
                                 <div class="challenge-item">
                                     <div class="challenge-dot green"></div>
-                                    <input type="text" class="text-input" placeholder="Comfortable..." id="greenChallenge">
+                                    <input type="text" class="text-input" placeholder="Works well / Comfortable..." id="greenChallenge">
                                 </div>
                             </div>
-                            <div class="vision-target">
-                                <h4>Vision Target/Notes</h4>
-                                <input type="text" class="text-input" placeholder="Specific target or goal..." id="visionTarget">
+                            
+                            <div class="vision-target back-section">
+                                <h4>🎯 Vision Target / Additional Notes</h4>
+                                <input type="text" class="text-input" placeholder="Specific goals, targets, or important information..." id="visionTarget">
                             </div>
-                            <div class="back-footer">Find more info here:</div>
-                            <div class="contact-section">
-                                <input type="text" class="text-input" placeholder="Contact info..." id="contactInfo" style="max-width: 200px;">
+                            
+                            <div class="contact-section back-section">
+                                <h3>📞 Contact Information</h3>
+                                <input type="text" class="text-input" placeholder="Vision teacher, specialist, or resource..." id="contactInfo" style="text-align: center;">
                             </div>
+                            
                             <div class="bottom-text">
-                                Created by Vision in 60 Seconds D.Downes 2025
+                                Created with Vision in 60 Seconds! © D.Downes 2025
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="controls">
-                    <button class="btn btn-secondary" onclick="flipCard()">Flip Card</button>
-                    <button class="btn btn-primary" onclick="downloadPDF()">Download PDF</button>
+                    <button class="btn btn-secondary" onclick="flipCard()">🔄 Flip Card</button>
+                    <button class="btn btn-tertiary" onclick="resetCard()">🔄 Clear Card</button>
+                    <button class="btn btn-primary" onclick="showSaveModal()">💾 Save Profile</button>
+                    <button class="btn btn-primary" onclick="downloadPDF()">📄 Download PDF</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="print-cards-container" id="printCardsContainer" style="display: none;">
+    <!-- Save Modal -->
+    <div class="modal-overlay" id="saveModal">
+        <div class="modal">
+            <h3>💾 Save Profile</h3>
+            <input type="text" class="text-input" placeholder="Student Name" id="profileName" style="width: 100%; margin-bottom: 15px;">
+            <div class="modal-buttons">
+                <button class="btn btn-secondary" onclick="closeSaveModal()" style="flex: 1;">Cancel</button>
+                <button class="btn btn-primary" onclick="saveProfile()" style="flex: 1;">Save</button>
+            </div>
         </div>
+    </div>
 
     <script>
-        const statements = [
-            "Better on Left", "Better on Right", "Show it High", "Better in Centre",
-            "Bring it Close", "Big Bright Bold", "Give me Time", "Keep it short",
-            "Clear the Clutter", "My Vision Varies", "Use Real Objects", "Just One Thing",
-            "Eyes or Ears", "Make it Move", "Keep it Still", "Light it Up",
-            "Control the Light", "Talk like Radio", "Sound Cues Vision"
+        // Tile data with categories and icons
+        const tilesData = [
+            { text: "Better on Left", category: "positioning", icon: "⬅️" },
+            { text: "Better on Right", category: "positioning", icon: "➡️" },
+            { text: "Show it High", category: "positioning", icon: "⬆️" },
+            { text: "Better in Centre", category: "positioning", icon: "🎯" },
+            { text: "Bring it Close", category: "size", icon: "🔍" },
+            { text: "Big Bright Bold", category: "size", icon: "📏" },
+            { text: "Give me Time", category: "timing", icon: "⏱️" },
+            { text: "Keep it Short", category: "timing", icon: "⚡" },
+            { text: "Clear the Clutter", category: "clarity", icon: "✨" },
+            { text: "My Vision Varies", category: "clarity", icon: "🌈" },
+            { text: "Use Real Objects", category: "clarity", icon: "🎁" },
+            { text: "Just One Thing", category: "clarity", icon: "1️⃣" },
+            { text: "Eyes or Ears", category: "sensory", icon: "👂" },
+            { text: "Make it Move", category: "motion", icon: "🎯" },
+            { text: "Keep it Still", category: "motion", icon: "🛑" },
+            { text: "Light it Up", category: "lighting", icon: "💡" },
+            { text: "Control the Light", category: "lighting", icon: "🔆" },
+            { text: "Talk like Radio", category: "sensory", icon: "📻" },
+            { text: "Sound Cues Vision", category: "sensory", icon: "🔔" }
         ];
+
+        // Tile explanations for PDF glossary
+        const tileExplanations = {
+            "Better on Left": "Student processes visual information better when presented on their left side",
+            "Better on Right": "Student processes visual information better when presented on their right side",
+            "Show it High": "Positioning materials higher in the visual field improves access",
+            "Better in Centre": "Materials are best viewed when centrally positioned",
+            "Bring it Close": "Student needs materials brought closer to access them effectively",
+            "Big Bright Bold": "High contrast, large, bold items are easier to see and identify",
+            "Give me Time": "Student needs additional processing time to gather visual information",
+            "Keep it Short": "Brief presentations work better; avoid lengthy visual tasks",
+            "Clear the Clutter": "Reduce visual complexity and background distractions",
+            "My Vision Varies": "Visual function fluctuates - good days and challenging days",
+            "Use Real Objects": "Real 3D objects are easier to understand than pictures or symbols",
+            "Just One Thing": "Present one item at a time to avoid visual overload",
+            "Eyes or Ears": "May rely more on auditory than visual information",
+            "Make it Move": "Movement helps attract and maintain visual attention",
+            "Keep it Still": "Movement can be distracting; static presentations work better",
+            "Light it Up": "Additional lighting improves visual access",
+            "Control the Light": "Too much or wrong type of light can interfere with vision",
+            "Talk like Radio": "Describe everything as if student can't see it - rich verbal descriptions",
+            "Sound Cues Vision": "Use sound to help student locate and orient to visual targets"
+        };
 
         let droppedTiles = [];
         let isFlipped = false;
         let selectedTiles = new Set();
+        let savedProfiles = JSON.parse(localStorage.getItem('visionProfiles') || '[]');
+        let currentFilter = 'all';
 
-        // Fixed height for printing cards - adjusted for ~8 statements
-        // 100mm is approximately 378px.
-        const CARD_FIXED_HEIGHT_PX = 380; // This value directly controls the card height for PDF/print
-        const CARD_FIXED_WIDTH_PX = 420; // This is the standard card width in browser
-
+        // Initialize tiles
         function initializeTiles() {
             const tilesGrid = document.getElementById('tilesGrid');
-            if (!tilesGrid) { 
-                console.error("Error: 'tilesGrid' element not found.");
-                return;
-            }
-            statements.forEach((statement, index) => {
+            tilesGrid.innerHTML = '';
+            
+            const filteredTiles = currentFilter === 'all' 
+                ? tilesData 
+                : tilesData.filter(tile => tile.category === currentFilter);
+
+            filteredTiles.forEach((tileData, index) => {
                 const tile = document.createElement('div');
                 tile.className = 'statement-tile';
-                tile.textContent = statement;
-                tile.dataset.statement = statement;
-                tile.dataset.colorIndex = index % 7;
+                tile.dataset.statement = tileData.text;
+                tile.dataset.category = tileData.category;
+                
+                tile.innerHTML = `
+                    <span class="icon">${tileData.icon}</span>
+                    <span>${tileData.text}</span>
+                `;
+                
+                // Check if this tile is already selected
+                if (selectedTiles.has(tileData.text)) {
+                    tile.classList.add('selected');
+                }
                 
                 tile.addEventListener('click', () => {
-                    toggleTile(statement, index % 7, tile);
+                    toggleTile(tileData.text, tileData.category, tile);
                 });
                 
                 tilesGrid.appendChild(tile);
             });
         }
 
-        function toggleTile(statement, colorIndex, tileElement) {
+        // Category filter functionality
+        document.addEventListener('DOMContentLoaded', () => {
+            const categoryButtons = document.querySelectorAll('.category-btn');
+            categoryButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    categoryButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentFilter = btn.dataset.category;
+                    initializeTiles();
+                });
+            });
+
+            initializeTiles();
+            updateDropZone();
+            loadSavedProfiles();
+        });
+
+        function toggleTile(statement, category, tileElement) {
             if (selectedTiles.has(statement)) {
                 selectedTiles.delete(statement);
                 tileElement.classList.remove('selected');
@@ -654,29 +1085,30 @@
             } else {
                 selectedTiles.add(statement);
                 tileElement.classList.add('selected');
-                droppedTiles.push({statement, colorIndex});
+                droppedTiles.push({statement, category});
             }
             updateDropZone();
+            updateCardSize();
         }
 
         function removeTile(statementToRemove) {
             droppedTiles = droppedTiles.filter(tile => tile.statement !== statementToRemove);
-            selectedTiles.delete(statementToRemove); 
+            selectedTiles.delete(statementToRemove);
             
-            const originalTileElement = document.querySelector(`.statement-tile[data-statement="${statementToRemove}"]`);
-            if (originalTileElement) {
-                originalTileElement.classList.remove('selected');
-            }
+            // Update all tile elements in the grid
+            const allTiles = document.querySelectorAll('.statement-tile');
+            allTiles.forEach(tile => {
+                if (tile.dataset.statement === statementToRemove) {
+                    tile.classList.remove('selected');
+                }
+            });
             
             updateDropZone();
+            updateCardSize();
         }
 
         function updateDropZone() {
             const dropZone = document.getElementById('dropZone');
-            if (!dropZone) { 
-                console.error("Error: 'dropZone' element not found.");
-                return;
-            }
             
             if (droppedTiles.length === 0) {
                 dropZone.classList.add('empty');
@@ -689,193 +1121,490 @@
                     const tile = document.createElement('div');
                     tile.className = 'dropped-tile';
                     tile.textContent = tileData.statement;
-                    tile.dataset.color = tileData.colorIndex;
+                    tile.dataset.category = tileData.category;
                     tile.onclick = () => removeTile(tileData.statement);
                     dropZone.appendChild(tile);
                 });
             }
         }
 
+        function updateCardSize() {
+            const cardInner = document.getElementById('cardInner');
+            const cardFront = document.getElementById('cardFront');
+            const tileCount = droppedTiles.length;
+            const sizeIndicator = document.getElementById('cardSizeIndicator');
+            
+            // Remove all size classes
+            cardInner.classList.remove('card-size-small', 'card-size-medium', 'card-size-large');
+            
+            if (tileCount <= 4) {
+                cardInner.classList.add('card-size-small');
+                sizeIndicator.textContent = 'Small Card (2" × 3.5")';
+            } else if (tileCount <= 8) {
+                cardInner.classList.add('card-size-medium');
+                sizeIndicator.textContent = 'Medium Card (3" × 4")';
+            } else {
+                cardInner.classList.add('card-size-large');
+                sizeIndicator.textContent = 'Large Card (3.5" × 5")';
+            }
+            
+            // Set container height to match front card
+            setTimeout(() => {
+                cardInner.style.minHeight = cardFront.offsetHeight + 'px';
+            }, 50);
+        }
+
         function flipCard() {
             const cardInner = document.getElementById('cardInner');
-            if (cardInner) { 
-                isFlipped = !isFlipped;
-                cardInner.classList.toggle('flipped');
-            } else {
-                console.error("Error: 'cardInner' element not found for flipping.");
+            const cardFront = document.getElementById('cardFront');
+            const cardBack = document.getElementById('cardBack');
+            
+            isFlipped = !isFlipped;
+            cardInner.classList.toggle('flipped');
+            
+            // Set the container height to match the visible card
+            setTimeout(() => {
+                if (isFlipped) {
+                    cardInner.style.minHeight = cardBack.offsetHeight + 'px';
+                } else {
+                    cardInner.style.minHeight = cardFront.offsetHeight + 'px';
+                }
+            }, 50);
+        }
+
+        function resetCard() {
+            if (confirm('Clear all tiles and reset the card?')) {
+                droppedTiles = [];
+                selectedTiles.clear();
+                
+                // Clear all inputs
+                document.getElementById('studentInitial').textContent = 'JS';
+                document.getElementById('cardTitle').innerHTML = 'Make it<br>Easier to See!';
+                document.getElementById('redChallenge').value = '';
+                document.getElementById('orangeChallenge').value = '';
+                document.getElementById('greenChallenge').value = '';
+                document.getElementById('visionTarget').value = '';
+                document.getElementById('contactInfo').value = '';
+                
+                initializeTiles();
+                updateDropZone();
+                updateCardSize();
             }
         }
 
+        // Save/Load functionality
+        function showSaveModal() {
+            document.getElementById('saveModal').classList.add('active');
+            document.getElementById('profileName').focus();
+        }
+
+        function closeSaveModal() {
+            document.getElementById('saveModal').classList.remove('active');
+            document.getElementById('profileName').value = '';
+        }
+
+        function saveProfile() {
+            const profileName = document.getElementById('profileName').value.trim();
+            
+            if (!profileName) {
+                alert('Please enter a name for this profile');
+                return;
+            }
+
+            const profile = {
+                id: Date.now(),
+                name: profileName,
+                date: new Date().toISOString(),
+                studentInitial: document.getElementById('studentInitial').textContent,
+                cardTitle: document.getElementById('cardTitle').innerHTML,
+                tiles: [...droppedTiles],
+                redChallenge: document.getElementById('redChallenge').value,
+                orangeChallenge: document.getElementById('orangeChallenge').value,
+                greenChallenge: document.getElementById('greenChallenge').value,
+                visionTarget: document.getElementById('visionTarget').value,
+                contactInfo: document.getElementById('contactInfo').value
+            };
+
+            savedProfiles.push(profile);
+            localStorage.setItem('visionProfiles', JSON.stringify(savedProfiles));
+            
+            closeSaveModal();
+            loadSavedProfiles();
+            
+            // Show success message
+            alert('✅ Profile saved successfully!');
+        }
+
+        function loadSavedProfiles() {
+            const container = document.getElementById('savedProfiles');
+            
+            if (savedProfiles.length === 0) {
+                container.innerHTML = '<p style="color: #999; text-align: center; padding: 20px; font-style: italic;">No saved profiles yet. Create your first profile!</p>';
+                return;
+            }
+
+            container.innerHTML = savedProfiles.map(profile => {
+                const date = new Date(profile.date);
+                const formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                
+                return `
+                    <div class="saved-profile-item">
+                        <div class="profile-icon">${profile.studentInitial}</div>
+                        <div class="profile-details">
+                            <div class="profile-name">${profile.name}</div>
+                            <div class="profile-meta">${profile.tiles.length} strategies • ${formattedDate}</div>
+                        </div>
+                        <div class="profile-actions">
+                            <button class="icon-btn load" onclick="loadProfile(${profile.id})" title="Load">📂</button>
+                            <button class="icon-btn delete" onclick="deleteProfile(${profile.id})" title="Delete">🗑️</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function loadProfile(profileId) {
+            const profile = savedProfiles.find(p => p.id === profileId);
+            if (!profile) return;
+
+            // Clear current state
+            droppedTiles = [];
+            selectedTiles.clear();
+
+            // Load profile data
+            document.getElementById('studentInitial').textContent = profile.studentInitial;
+            document.getElementById('cardTitle').innerHTML = profile.cardTitle;
+            document.getElementById('redChallenge').value = profile.redChallenge;
+            document.getElementById('orangeChallenge').value = profile.orangeChallenge;
+            document.getElementById('greenChallenge').value = profile.greenChallenge;
+            document.getElementById('visionTarget').value = profile.visionTarget;
+            document.getElementById('contactInfo').value = profile.contactInfo;
+
+            // Restore tiles
+            profile.tiles.forEach(tile => {
+                selectedTiles.add(tile.statement);
+                droppedTiles.push(tile);
+            });
+
+            initializeTiles();
+            updateDropZone();
+            updateCardSize();
+
+            // Scroll to card
+            document.getElementById('profileCard').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function deleteProfile(profileId) {
+            if (confirm('Delete this profile? This cannot be undone.')) {
+                savedProfiles = savedProfiles.filter(p => p.id !== profileId);
+                localStorage.setItem('visionProfiles', JSON.stringify(savedProfiles));
+                loadSavedProfiles();
+            }
+        }
+
+        // PDF Generation
         async function downloadPDF() {
-            if (typeof window.jsPDF === 'undefined' || typeof html2canvas === 'undefined') {
-                triggerNativePrint();
+            if (typeof window.jsPDF === 'undefined') {
+                alert('PDF library not loaded. Please try again.');
                 return;
             }
 
             try {
-                const cardInner = document.getElementById('cardInner');
-                const originalCardFront = document.getElementById('cardFront');
-                const originalCardBack = document.getElementById('cardBack');
-
-                if (!cardInner || !originalCardFront || !originalCardBack) {
-                    console.error("Error: Required card elements not found for PDF generation.");
-                    triggerNativePrint();
-                    return;
-                }
-
-                const wasFlipped = cardInner.classList.contains('flipped');
-                if (wasFlipped) {
-                    cardInner.classList.remove('flipped');
-                    await new Promise(resolve => setTimeout(resolve, 50)); 
-                }
-
-                // Create a single temporary container for rendering clones before html2canvas capture
-                const tempContainer = createTempContainer();
-                document.body.appendChild(tempContainer);
-
-                const cardFrontClone = originalCardFront.cloneNode(true);
-                const cardBackClone = originalCardBack.cloneNode(true);
-
-                // Append both clones to the same temporary container
-                tempContainer.appendChild(cardFrontClone);
-                tempContainer.appendChild(cardBackClone);
-
-                // Prepare clones (replace inputs, handle contenteditables, ensure overflow visible)
-                prepareCardForCapture(originalCardFront, cardFrontClone);
-                prepareCardForCapture(originalCardBack, cardBackClone);
-                
-                // Set the fixed height directly after preparation
-                cardFrontClone.style.height = `${CARD_FIXED_HEIGHT_PX}px`;
-                cardFrontClone.style.minHeight = `${CARD_FIXED_HEIGHT_PX}px`; // Reinforce
-                cardBackClone.style.height = `${CARD_FIXED_HEIGHT_PX}px`;
-                cardBackClone.style.minHeight = `${CARD_FIXED_HEIGHT_PX}px`; // Reinforce
-
-                // Give a brief moment for layout to settle after setting fixed height
-                await new Promise(resolve => setTimeout(resolve, 100));
-
                 const { jsPDF } = window.jsPDF;
                 const pdf = new jsPDF({
-                    orientation: 'landscape',
+                    orientation: 'portrait',
                     unit: 'mm',
                     format: 'a4'
                 });
 
-                const pxToMm = (px) => px * 0.264583;
+                // Page 1: Cover Page
+                await generateCoverPage(pdf);
 
-                const cardWidthMM = pxToMm(CARD_FIXED_WIDTH_PX);
-                const cardHeightMM = pxToMm(CARD_FIXED_HEIGHT_PX);
-                const spacingMM = 20; 
+                // Page 2: Cards
+                pdf.addPage();
+                await generateCardsPage(pdf);
 
-                const totalCardsWidthMM = cardWidthMM * 2 + spacingMM;
+                // Page 3: Glossary
+                pdf.addPage();
+                generateGlossaryPage(pdf);
 
-                const startX = (pdf.internal.pageSize.getWidth() - totalCardsWidthMM) / 2;
-                const startY = (pdf.internal.pageSize.getHeight() - cardHeightMM) / 2;
-
-
-                const frontCanvas = await html2canvas(cardFrontClone, {
-                    scale: 2, 
-                    useCORS: true,
-                    backgroundColor: '#ffffff',
-                    width: CARD_FIXED_WIDTH_PX,
-                    height: CARD_FIXED_HEIGHT_PX 
-                });
-
-                const backCanvas = await html2canvas(cardBackClone, {
-                    scale: 2,
-                    useCORS: true,
-                    backgroundColor: '#ffffff',
-                    width: CARD_FIXED_WIDTH_PX,
-                    height: CARD_FIXED_HEIGHT_PX 
-                });
-
-                pdf.setFontSize(16);
-                pdf.setTextColor(50, 50, 50);
-                pdf.text('Vision Profile Cards - Print & Cut', pdf.internal.pageSize.getWidth()/2, 20, { align: 'center' });
-
-                pdf.setFontSize(10);
-                pdf.text('Cut along the dashed lines. Both cards are printed at the same size.', pdf.internal.pageSize.getWidth()/2, 30, { align: 'center' });
-
-                const frontImgData = frontCanvas.toDataURL('image/png');
-                const backImgData = backCanvas.toDataURL('image/png');
-                
-                pdf.addImage(frontImgData, 'PNG', startX, startY, cardWidthMM, cardHeightMM);
-                pdf.addImage(backImgData, 'PNG', startX + cardWidthMM + spacingMM, startY, cardWidthMM, cardHeightMM);
-
-                pdf.setFontSize(12);
-                pdf.setTextColor(100, 100, 100);
-                pdf.text('FRONT', startX + cardWidthMM/2, startY + cardHeightMM + 10, { align: 'center' });
-                pdf.text('BACK', startX + cardWidthMM + spacingMM + cardWidthMM/2, startY + cardHeightMM + 10, { align: 'center' });
-
-                pdf.setDrawColor(150, 150, 150);
-                pdf.setLineWidth(0.3);
-                pdf.setLineDashPattern([2, 2], 0);
-                
-                pdf.rect(startX - 2, startY - 2, cardWidthMM + 4, cardHeightMM + 4);
-                pdf.rect(startX + cardWidthMM + spacingMM - 2, startY - 2, cardWidthMM + 4, cardHeightMM + 4);
-
-                pdf.save('vision-profile-cards.pdf');
-
-                document.body.removeChild(tempContainer); 
-
-                if (wasFlipped) {
-                    cardInner.classList.add('flipped');
-                }
+                // Save the PDF
+                const studentName = document.getElementById('studentInitial').textContent;
+                const fileName = `vision-profile-${studentName}-${Date.now()}.pdf`;
+                pdf.save(fileName);
 
             } catch (error) {
                 console.error('PDF generation failed:', error);
-                if (cardInner && wasFlipped) {
-                    cardInner.classList.add('flipped');
-                }
-                triggerNativePrint();
+                alert('Failed to generate PDF. Please try again.');
             }
         }
 
-        // createTempContainer now also uses the fixed width/height for better consistency
-        function createTempContainer() {
-            const container = document.createElement('div');
-            container.style.position = 'absolute'; 
-            container.style.left = '-9999px';      
-            container.style.top = '-9999px';
-            container.style.width = `${CARD_FIXED_WIDTH_PX}px`;       
-            container.style.height = `${CARD_FIXED_HEIGHT_PX}px`;       
-            container.style.overflow = 'hidden';  /* Hide temp container content */
-            container.style.backgroundColor = 'white'; 
-            container.style.padding = '15px'; 
-            container.style.boxSizing = 'border-box'; 
-            container.style.fontFamily = "'Poppins', sans-serif"; 
-            return container;
+        async function generateCoverPage(pdf) {
+            const pageWidth = pdf.internal.pageSize.getWidth();
+            const pageHeight = pdf.internal.pageSize.getHeight();
+
+            // Background gradient effect (simulated with rectangles)
+            pdf.setFillColor(102, 126, 234);
+            pdf.rect(0, 0, pageWidth, pageHeight / 2, 'F');
+            pdf.setFillColor(118, 75, 162);
+            pdf.rect(0, pageHeight / 2, pageWidth, pageHeight / 2, 'F');
+
+            // White overlay for content area
+            pdf.setFillColor(255, 255, 255);
+            pdf.roundedRect(20, 40, pageWidth - 40, pageHeight - 80, 5, 5, 'F');
+
+            // Title
+            pdf.setTextColor(26, 35, 126);
+            pdf.setFontSize(32);
+            pdf.setFont(undefined, 'bold');
+            pdf.text('Vision in 60 Seconds!', pageWidth / 2, 70, { align: 'center' });
+
+            // Subtitle
+            pdf.setFontSize(16);
+            pdf.setFont(undefined, 'normal');
+            pdf.text('Vision Profile Card', pageWidth / 2, 85, { align: 'center' });
+
+            // Student info
+            const studentInitial = document.getElementById('studentInitial').textContent;
+            const cardTitle = document.getElementById('cardTitle').textContent.replace(/<br>/g, ' ');
+            
+            pdf.setFontSize(14);
+            pdf.setFont(undefined, 'bold');
+            pdf.text('Student:', 40, 110);
+            pdf.setFont(undefined, 'normal');
+            pdf.text(studentInitial, 70, 110);
+
+            pdf.setFont(undefined, 'bold');
+            pdf.text('Profile:', 40, 125);
+            pdf.setFont(undefined, 'normal');
+            pdf.text(cardTitle, 70, 125);
+
+            // Strategies count
+            pdf.setFont(undefined, 'bold');
+            pdf.text('Strategies Selected:', 40, 140);
+            pdf.setFont(undefined, 'normal');
+            pdf.text(`${droppedTiles.length}`, 100, 140);
+
+            // Date
+            pdf.setFont(undefined, 'bold');
+            pdf.text('Created:', 40, 155);
+            pdf.setFont(undefined, 'normal');
+            pdf.text(new Date().toLocaleDateString(), 70, 155);
+
+            // Instructions box
+            pdf.setFillColor(240, 245, 255);
+            pdf.roundedRect(30, 175, pageWidth - 60, 70, 3, 3, 'F');
+            
+            pdf.setFontSize(12);
+            pdf.setFont(undefined, 'bold');
+            pdf.text('📋 How to Use This Profile:', 40, 190);
+            
+            pdf.setFont(undefined, 'normal');
+            pdf.setFontSize(10);
+            const instructions = [
+                '1. Print page 2 on cardstock for durability',
+                '2. Cut along the dashed lines',
+                '3. Optional: Laminate cards before folding',
+                '4. Fold and glue front and back together',
+                '5. Share with teachers and support staff',
+                '6. Review the glossary on page 3 for detailed explanations'
+            ];
+            
+            instructions.forEach((instruction, index) => {
+                pdf.text(instruction, 40, 205 + (index * 8));
+            });
+
+            // Footer
+            pdf.setFontSize(8);
+            pdf.setTextColor(128, 128, 128);
+            pdf.text('Created with Vision in 60 Seconds! © D.Downes 2025', pageWidth / 2, pageHeight - 15, { align: 'center' });
         }
 
-        // Simplified prepareCardForCapture: no more min-height or flex-grow resets,
-        // just input/contenteditable handling and ensuring overflow is visible for capture.
-        function prepareCardForCapture(originalCardElement, clonedCardElement) {
-            clonedCardElement.style.position = 'relative'; 
-            clonedCardElement.style.transform = 'none'; 
-            clonedCardElement.style.backfaceVisibility = 'visible';
-            clonedCardElement.style.width = `${CARD_FIXED_WIDTH_PX}px`; 
-            clonedCardElement.style.overflow = 'visible'; /* Crucial for html2canvas to capture hidden content */
-            clonedCardElement.style.boxShadow = 'none'; 
-            clonedCardElement.style.padding = getComputedStyle(originalCardElement).padding; 
+        async function generateCardsPage(pdf) {
+            const cardInner = document.getElementById('cardInner');
+            const originalCardFront = document.getElementById('cardFront');
+            const originalCardBack = document.getElementById('cardBack');
 
-            // Handle inputs (replace with spans for static text in capture)
+            // Ensure card is showing front
+            const wasFlipped = cardInner.classList.contains('flipped');
+            if (wasFlipped) {
+                cardInner.classList.remove('flipped');
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
+
+            // Determine card size based on tile count
+            const tileCount = droppedTiles.length;
+            let cardWidthMM, cardHeightMM;
+            
+            if (tileCount <= 4) {
+                cardWidthMM = 54; // Credit card width
+                cardHeightMM = 86; // Small
+            } else if (tileCount <= 8) {
+                cardWidthMM = 76; // Medium width
+                cardHeightMM = 102; // Medium height
+            } else {
+                cardWidthMM = 89; // Large width
+                cardHeightMM = 127; // Large height (5" x 3.5")
+            }
+
+            const pageWidth = pdf.internal.pageSize.getWidth();
+            const spacingMM = 15;
+
+            // Center cards on page
+            const totalWidth = (cardWidthMM * 2) + spacingMM;
+            const startX = (pageWidth - totalWidth) / 2;
+            const startY = 40;
+
+            // Create temp container
+            const tempContainer = document.createElement('div');
+            tempContainer.style.position = 'absolute';
+            tempContainer.style.left = '-9999px';
+            tempContainer.style.width = `${cardWidthMM * 3.78}px`; // Convert mm to px
+            tempContainer.style.height = `${cardHeightMM * 3.78}px`;
+            tempContainer.style.backgroundColor = 'white';
+            document.body.appendChild(tempContainer);
+
+            // Clone and capture front
+            const cardFrontClone = originalCardFront.cloneNode(true);
+            prepareCardForCapture(originalCardFront, cardFrontClone);
+            cardFrontClone.style.width = `${cardWidthMM * 3.78}px`;
+            cardFrontClone.style.height = `${cardHeightMM * 3.78}px`;
+            tempContainer.appendChild(cardFrontClone);
+
+            await new Promise(resolve => setTimeout(resolve, 100));
+
+            const frontCanvas = await html2canvas(cardFrontClone, {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: '#ffffff',
+                width: cardWidthMM * 3.78,
+                height: cardHeightMM * 3.78
+            });
+
+            tempContainer.innerHTML = '';
+
+            // Clone and capture back
+            const cardBackClone = originalCardBack.cloneNode(true);
+            prepareCardForCapture(originalCardBack, cardBackClone);
+            cardBackClone.style.width = `${cardWidthMM * 3.78}px`;
+            cardBackClone.style.height = `${cardHeightMM * 3.78}px`;
+            tempContainer.appendChild(cardBackClone);
+
+            await new Promise(resolve => setTimeout(resolve, 100));
+
+            const backCanvas = await html2canvas(cardBackClone, {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: '#ffffff',
+                width: cardWidthMM * 3.78,
+                height: cardHeightMM * 3.78
+            });
+
+            document.body.removeChild(tempContainer);
+
+            // Add title
+            pdf.setFontSize(18);
+            pdf.setTextColor(26, 35, 126);
+            pdf.setFont(undefined, 'bold');
+            pdf.text('Vision Profile Cards - Print & Cut', pageWidth / 2, 25, { align: 'center' });
+
+            pdf.setFontSize(10);
+            pdf.setFont(undefined, 'normal');
+            pdf.setTextColor(100, 100, 100);
+            pdf.text(`Card Size: ${cardWidthMM}mm × ${cardHeightMM}mm - Cut along dashed lines`, pageWidth / 2, 32, { align: 'center' });
+
+            // Add cards to PDF
+            const frontImgData = frontCanvas.toDataURL('image/png');
+            const backImgData = backCanvas.toDataURL('image/png');
+            
+            pdf.addImage(frontImgData, 'PNG', startX, startY, cardWidthMM, cardHeightMM);
+            pdf.addImage(backImgData, 'PNG', startX + cardWidthMM + spacingMM, startY, cardWidthMM, cardHeightMM);
+
+            // Labels
+            pdf.setFontSize(12);
+            pdf.setFont(undefined, 'bold');
+            pdf.text('FRONT', startX + cardWidthMM / 2, startY + cardHeightMM + 8, { align: 'center' });
+            pdf.text('BACK', startX + cardWidthMM + spacingMM + cardWidthMM / 2, startY + cardHeightMM + 8, { align: 'center' });
+
+            // Cut lines
+            pdf.setDrawColor(150, 150, 150);
+            pdf.setLineWidth(0.2);
+            pdf.setLineDashPattern([2, 2], 0);
+            
+            pdf.rect(startX - 2, startY - 2, cardWidthMM + 4, cardHeightMM + 4);
+            pdf.rect(startX + cardWidthMM + spacingMM - 2, startY - 2, cardWidthMM + 4, cardHeightMM + 4);
+
+            if (wasFlipped) {
+                cardInner.classList.add('flipped');
+            }
+        }
+
+        function generateGlossaryPage(pdf) {
+            const pageWidth = pdf.internal.pageSize.getWidth();
+            
+            // Title
+            pdf.setFontSize(20);
+            pdf.setTextColor(26, 35, 126);
+            pdf.setFont(undefined, 'bold');
+            pdf.text('Strategy Glossary', pageWidth / 2, 20, { align: 'center' });
+
+            pdf.setFontSize(10);
+            pdf.setFont(undefined, 'normal');
+            pdf.setTextColor(100, 100, 100);
+            pdf.text('Detailed explanations of visual strategies', pageWidth / 2, 28, { align: 'center' });
+
+            let yPosition = 40;
+
+            // Only show explanations for selected tiles
+            droppedTiles.forEach((tile, index) => {
+                if (yPosition > 270) return; // Don't overflow page
+
+                const explanation = tileExplanations[tile.statement];
+                
+                // Strategy name
+                pdf.setFontSize(11);
+                pdf.setFont(undefined, 'bold');
+                pdf.setTextColor(26, 35, 126);
+                pdf.text(`${index + 1}. ${tile.statement}`, 20, yPosition);
+
+                // Explanation
+                pdf.setFontSize(9);
+                pdf.setFont(undefined, 'normal');
+                pdf.setTextColor(60, 60, 60);
+                
+                const lines = pdf.splitTextToSize(explanation, pageWidth - 50);
+                pdf.text(lines, 25, yPosition + 6);
+
+                yPosition += 6 + (lines.length * 5) + 8;
+            });
+
+            // Footer
+            pdf.setFontSize(8);
+            pdf.setTextColor(128, 128, 128);
+            pdf.text('For more information about CVI, consult with your vision specialist', pageWidth / 2, 285, { align: 'center' });
+        }
+
+        function prepareCardForCapture(originalCardElement, clonedCardElement) {
+            clonedCardElement.style.position = 'relative';
+            clonedCardElement.style.transform = 'none';
+            clonedCardElement.style.backfaceVisibility = 'visible';
+            clonedCardElement.style.overflow = 'visible';
+            clonedCardElement.style.boxShadow = 'none';
+
+            // Replace inputs with spans
             const originalInputs = originalCardElement.querySelectorAll('input');
             const clonedInputs = clonedCardElement.querySelectorAll('input');
+            
             clonedInputs.forEach((clonedInput, index) => {
-                const originalInput = originalInputs[index]; 
-                if (originalInput && originalInput.value) { 
+                const originalInput = originalInputs[index];
+                if (originalInput && originalInput.value) {
                     const span = document.createElement('span');
                     span.textContent = originalInput.value;
-                    const computedStyle = getComputedStyle(originalInput);
-                    // Copy relevant styles for visual fidelity
-                    span.style.fontSize = computedStyle.fontSize;
-                    span.style.color = computedStyle.color;
-                    span.style.padding = computedStyle.padding;
-                    span.style.margin = computedStyle.margin;
-                    span.style.display = computedStyle.display === 'inline' ? 'inline' : 'block'; 
-                    span.style.fontWeight = computedStyle.fontWeight; 
-                    span.style.boxSizing = computedStyle.boxSizing;
-                    span.style.whiteSpace = 'normal'; 
-                    span.style.wordBreak = 'break-word'; 
+                    span.style.fontSize = getComputedStyle(originalInput).fontSize;
+                    span.style.color = getComputedStyle(originalInput).color;
+                    span.style.padding = getComputedStyle(originalInput).padding;
+                    span.style.display = 'block';
+                    span.style.fontWeight = getComputedStyle(originalInput).fontWeight;
                     clonedInput.parentNode.replaceChild(span, clonedInput);
                 } else {
                     if(clonedInput.parentNode) {
@@ -884,84 +1613,32 @@
                 }
             });
 
-            // Handle contenteditables (remove attribute and copy text)
+            // Handle contenteditable elements
             const originalContentEditables = originalCardElement.querySelectorAll('[contenteditable="true"]');
             const clonedContentEditables = clonedCardElement.querySelectorAll('[contenteditable="true"]');
+            
             clonedContentEditables.forEach((clonedCE, index) => {
                 const originalCE = originalContentEditables[index];
                 if (originalCE) {
-                    clonedCE.textContent = originalCE.textContent; 
-                    clonedCE.removeAttribute('contenteditable'); 
+                    clonedCE.innerHTML = originalCE.innerHTML;
+                    clonedCE.removeAttribute('contenteditable');
                 }
             });
 
-            // Ensure specific sections allow overflow for capture, as their parent has fixed height
-            const dropZone = clonedCardElement.querySelector('.drop-zone');
-            if (dropZone) {
-                dropZone.style.overflow = 'visible'; 
-                // Flex properties will now work within the explicitly set parent height
-            }
-            const challengeSection = clonedCardElement.querySelector('.challenge-section');
-            if (challengeSection) {
-                challengeSection.style.overflow = 'visible';
-                // Flex properties will now work within the explicitly set parent height
+            // Remove size indicator
+            const sizeIndicator = clonedCardElement.querySelector('.size-indicator');
+            if (sizeIndicator && sizeIndicator.parentNode) {
+                sizeIndicator.parentNode.removeChild(sizeIndicator);
             }
         }
-        
-        // Native print fallback using the same fixed height principle
-        async function triggerNativePrint() {
-            const originalCardFront = document.getElementById('cardFront');
-            const originalCardBack = document.getElementById('cardBack');
-            const printCardsContainer = document.getElementById('printCardsContainer');
-            const cardInner = document.getElementById('cardInner');
 
-            if (!originalCardFront || !originalCardBack || !printCardsContainer || !cardInner) {
-                console.error("Error: Required card elements or print container not found for native print.");
-                alert("Could not prepare cards for printing. Please ensure all elements are present.");
-                return;
-            }
-
-            printCardsContainer.innerHTML = '';
-            
-            const wasFlipped = cardInner.classList.contains('flipped');
-            if (wasFlipped) {
-                cardInner.classList.remove('flipped');
-                await new Promise(resolve => setTimeout(resolve, 50)); 
-            }
-
-            const cardFrontCloneForPrint = originalCardFront.cloneNode(true);
-            const cardBackCloneForPrint = originalCardBack.cloneNode(true);
-
-            // Prepare clones for print (same logic as for PDF capture)
-            prepareCardForCapture(originalCardFront, cardFrontCloneForPrint);
-            prepareCardForCapture(originalCardBack, cardBackCloneForPrint);
-
-            // Set the fixed height directly for print clones
-            cardFrontCloneForPrint.style.height = `${CARD_FIXED_HEIGHT_PX}px`;
-            cardFrontCloneForPrint.style.minHeight = `${CARD_FIXED_HEIGHT_PX}px`; 
-            cardBackCloneForPrint.style.height = `${CARD_FIXED_HEIGHT_PX}px`;
-            cardBackCloneForPrint.style.minHeight = `${CARD_FIXED_HEIGHT_PX}px`; 
-
-            // Append to the hidden print container
-            printCardsContainer.appendChild(cardFrontCloneForPrint);
-            printCardsContainer.appendChild(cardBackCloneForPrint);
-            
-            printCardsContainer.style.display = 'flex'; 
-            
-            setTimeout(() => {
-                window.print();
-                // Restore display and clear container after print dialog is closed
-                printCardsContainer.style.display = 'none';
-                printCardsContainer.innerHTML = ''; 
-                if (wasFlipped) {
-                    cardInner.classList.add('flipped');
-                }
-            }, 100);
-        }
-
+        // Allow Enter key to save in modal
         document.addEventListener('DOMContentLoaded', () => {
-            initializeTiles();
-            updateDropZone();
+            document.getElementById('profileName').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    saveProfile();
+                }
+            });
         });
     </script>
 </body>
