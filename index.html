@@ -1473,19 +1473,19 @@
                 await new Promise(resolve => setTimeout(resolve, 100));
             }
 
-            // Determine card size based on tile count - more generous sizing
+            // Determine card size based on tile count - much more generous sizing
             const tileCount = droppedTiles.length;
             let cardWidthMM, cardHeightMM;
             
             if (tileCount <= 3) {
                 cardWidthMM = 54; // Credit card width
-                cardHeightMM = 100; // Taller small
+                cardHeightMM = 120; // Much taller small card
             } else if (tileCount <= 6) {
                 cardWidthMM = 76; // Medium width
-                cardHeightMM = 130; // Much taller medium
+                cardHeightMM = 150; // Very tall medium
             } else {
                 cardWidthMM = 89; // Large width
-                cardHeightMM = 160; // Extra tall for lots of content
+                cardHeightMM = 180; // Extra tall for lots of content
             }
 
             const pageWidth = pdf.internal.pageSize.getWidth();
@@ -1519,7 +1519,11 @@
                 useCORS: true,
                 backgroundColor: '#ffffff',
                 width: cardWidthMM * 3.78,
-                height: cardHeightMM * 3.78
+                height: cardHeightMM * 3.78,
+                allowTaint: true,
+                logging: false,
+                scrollX: 0,
+                scrollY: 0
             });
 
             tempContainer.innerHTML = '';
@@ -1543,7 +1547,11 @@
                 useCORS: true,
                 backgroundColor: '#ffffff',
                 width: cardWidthMM * 3.78,
-                height: cardHeightMM * 3.78
+                height: cardHeightMM * 3.78,
+                allowTaint: true,
+                logging: false,
+                scrollX: 0,
+                scrollY: 0
             });
 
             document.body.removeChild(tempContainer);
@@ -1702,27 +1710,50 @@
 
             // Adjust section spacing
             const sections = clonedCardElement.querySelectorAll('.back-section');
-            sections.forEach(section => {
-                section.style.marginBottom = '12px';
+            sections.forEach((section, index) => {
+                section.style.marginBottom = '10px';
+                section.style.display = 'block';
+                section.style.visibility = 'visible';
             });
 
-            // Ensure contact section is visible
+            // Ensure contact section is visible and properly positioned
             const contactSection = clonedCardElement.querySelector('.contact-section');
             if (contactSection) {
                 contactSection.style.marginBottom = '15px';
+                contactSection.style.marginTop = '10px';
                 contactSection.style.padding = '10px';
                 contactSection.style.background = 'rgba(102, 126, 234, 0.05)';
                 contactSection.style.borderRadius = '8px';
+                contactSection.style.display = 'block';
+                contactSection.style.visibility = 'visible';
+                contactSection.style.position = 'relative';
+                
+                // Ensure contact input/content is visible
+                const contactInput = contactSection.querySelector('input, span');
+                if (contactInput) {
+                    contactInput.style.display = 'block';
+                    contactInput.style.visibility = 'visible';
+                }
             }
 
-            // Ensure bottom text is visible
+            // Ensure bottom text is visible and properly positioned
             const bottomText = clonedCardElement.querySelector('.bottom-text');
             if (bottomText) {
                 bottomText.style.marginTop = '15px';
-                bottomText.style.fontSize = '0.7rem';
+                bottomText.style.fontSize = '0.65rem';
                 bottomText.style.color = '#999';
                 bottomText.style.textAlign = 'center';
+                bottomText.style.display = 'block';
+                bottomText.style.visibility = 'visible';
+                bottomText.style.position = 'relative';
             }
+
+            // Make sure the card has enough height by setting explicit min-height
+            clonedCardElement.style.minHeight = 'auto';
+            clonedCardElement.style.height = 'auto';
+            
+            // Force the card to display all its content
+            clonedCardElement.style.flexShrink = '0';
 
             // Remove size indicator
             const sizeIndicator = clonedCardElement.querySelector('.size-indicator');
