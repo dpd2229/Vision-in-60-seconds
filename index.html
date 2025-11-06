@@ -1473,43 +1473,75 @@
                 await new Promise(resolve => setTimeout(resolve, 100));
             }
 
-            // Determine card size based on tile count - much more generous sizing
-            const tileCount = droppedTiles.length;
-            let cardWidthMM, cardHeightMM;
-            
-            if (tileCount <= 3) {
-                cardWidthMM = 54; // Credit card width
-                cardHeightMM = 120; // Much taller small card
-            } else if (tileCount <= 6) {
-                cardWidthMM = 76; // Medium width
-                cardHeightMM = 150; // Very tall medium
-            } else {
-                cardWidthMM = 89; // Large width
-                cardHeightMM = 180; // Extra tall for lots of content
-            }
-
+            // Dynamic sizing approach - measure actual content
             const pageWidth = pdf.internal.pageSize.getWidth();
             const spacingMM = 15;
+            const cardWidthMM = 76; // Standard width
+
+            // Create temporary measurement container
+            const measureContainer = document.createElement('div');
+            measureContainer.style.position = 'absolute';
+            measureContainer.style.left = '-9999px';
+            measureContainer.style.width = `${cardWidthMM * 3.78}px`;
+            measureContainer.style.visibility = 'hidden';
+            measureContainer.style.height = 'auto';
+            document.body.appendChild(measureContainer);
+
+            // Measure front card height
+            const frontMeasureClone = originalCardFront.cloneNode(true);
+            prepareCardForCapture(originalCardFront, frontMeasureClone);
+            frontMeasureClone.style.width = `${cardWidthMM * 3.78}px`;
+            frontMeasureClone.style.height = 'auto';
+            frontMeasureClone.style.minHeight = '0';
+            measureContainer.appendChild(frontMeasureClone);
+            
+            await new Promise(resolve => setTimeout(resolve, 50));
+            const frontActualHeight = frontMeasureClone.offsetHeight;
+            measureContainer.removeChild(frontMeasureClone);
+
+            // Measure back card height
+            const backMeasureClone = originalCardBack.cloneNode(true);
+            prepareCardForCapture(originalCardBack, backMeasureClone);
+            backMeasureClone.style.width = `${cardWidthMM * 3.78}px`;
+            backMeasureClone.style.height = 'auto';
+            backMeasureClone.style.minHeight = '0';
+            backMeasureClone.style.position = 'relative';
+            backMeasureClone.style.transform = 'none';
+            backMeasureClone.style.display = 'flex';
+            measureContainer.appendChild(backMeasureClone);
+            
+            await new Promise(resolve => setTimeout(resolve, 50));
+            const backActualHeight = backMeasureClone.offsetHeight;
+            
+            document.body.removeChild(measureContainer);
+
+            // Use the taller of the two cards, with minimum height and some padding
+            const maxContentHeight = Math.max(frontActualHeight, backActualHeight);
+            const cardHeightPx = Math.max(maxContentHeight + 40, 320); // At least 320px, plus 40px padding
+            const cardHeightMM = cardHeightPx / 3.78; // Convert back to mm
+
+            console.log(`Dynamic card sizing: ${cardWidthMM}mm x ${cardHeightMM.toFixed(1)}mm (${cardHeightPx}px)`);
 
             // Center cards on page
             const totalWidth = (cardWidthMM * 2) + spacingMM;
             const startX = (pageWidth - totalWidth) / 2;
             const startY = 40;
 
-            // Create temp container
+            // Create temp container with measured dimensions
             const tempContainer = document.createElement('div');
             tempContainer.style.position = 'absolute';
             tempContainer.style.left = '-9999px';
-            tempContainer.style.width = `${cardWidthMM * 3.78}px`; // Convert mm to px
-            tempContainer.style.height = `${cardHeightMM * 3.78}px`;
+            tempContainer.style.width = `${cardWidthMM * 3.78}px`;
+            tempContainer.style.height = `${cardHeightPx}px`;
             tempContainer.style.backgroundColor = 'white';
             document.body.appendChild(tempContainer);
 
-            // Clone and capture front
+            // Clone and capture front with dynamic height
             const cardFrontClone = originalCardFront.cloneNode(true);
             prepareCardForCapture(originalCardFront, cardFrontClone);
             cardFrontClone.style.width = `${cardWidthMM * 3.78}px`;
-            cardFrontClone.style.height = `${cardHeightMM * 3.78}px`;
+            cardFrontClone.style.height = `${cardHeightPx}px`;
+            cardFrontClone.style.minHeight = `${cardHeightPx}px`;
             tempContainer.appendChild(cardFrontClone);
 
             await new Promise(resolve => setTimeout(resolve, 100));
@@ -1519,7 +1551,7 @@
                 useCORS: true,
                 backgroundColor: '#ffffff',
                 width: cardWidthMM * 3.78,
-                height: cardHeightMM * 3.78,
+                height: cardHeightPx,
                 allowTaint: true,
                 logging: false,
                 scrollX: 0,
@@ -1528,16 +1560,16 @@
 
             tempContainer.innerHTML = '';
 
-            // Clone and capture back
+            // Clone and capture back with dynamic height
             const cardBackClone = originalCardBack.cloneNode(true);
             prepareCardForCapture(originalCardBack, cardBackClone);
             cardBackClone.style.width = `${cardWidthMM * 3.78}px`;
-            cardBackClone.style.height = `${cardHeightMM * 3.78}px`;
-            cardBackClone.style.minHeight = `${cardHeightMM * 3.78}px`; // Ensure minimum height
-            cardBackClone.style.position = 'relative'; // Make it visible
-            cardBackClone.style.transform = 'none'; // Remove rotation
-            cardBackClone.style.display = 'flex'; // Ensure it's displayed
-            cardBackClone.style.padding = '20px'; // Ensure padding for content
+            cardBackClone.style.height = `${cardHeightPx}px`;
+            cardBackClone.style.minHeight = `${cardHeightPx}px`;
+            cardBackClone.style.position = 'relative';
+            cardBackClone.style.transform = 'none';
+            cardBackClone.style.display = 'flex';
+            cardBackClone.style.padding = '20px';
             tempContainer.appendChild(cardBackClone);
 
             await new Promise(resolve => setTimeout(resolve, 100));
@@ -1547,7 +1579,7 @@
                 useCORS: true,
                 backgroundColor: '#ffffff',
                 width: cardWidthMM * 3.78,
-                height: cardHeightMM * 3.78,
+                height: cardHeightPx,
                 allowTaint: true,
                 logging: false,
                 scrollX: 0,
@@ -1565,7 +1597,7 @@
             pdf.setFontSize(10);
             pdf.setFont(undefined, 'normal');
             pdf.setTextColor(100, 100, 100);
-            pdf.text(`Card Size: ${cardWidthMM}mm × ${cardHeightMM}mm - Cut along dashed lines`, pageWidth / 2, 32, { align: 'center' });
+            pdf.text(`Card Size: ${cardWidthMM}mm × ${cardHeightMM.toFixed(1)}mm - Cut along dashed lines`, pageWidth / 2, 32, { align: 'center' });
 
             // Add cards to PDF
             const frontImgData = frontCanvas.toDataURL('image/png');
