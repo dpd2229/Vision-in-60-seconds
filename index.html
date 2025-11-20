@@ -30,12 +30,55 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: 
-                radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(255,255,255,0.1) 0%, transparent 50%);
+            background:
+                radial-gradient(circle at 20% 50%, rgba(255,255,255,0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255,255,255,0.15) 0%, transparent 50%),
+                radial-gradient(circle at 50% 20%, rgba(255,255,255,0.1) 0%, transparent 40%);
+            pointer-events: none;
+            z-index: 0;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        /* Floating particles */
+        @keyframes particleFloat {
+            0%, 100% {
+                transform: translateY(0) translateX(0);
+                opacity: 0.3;
+            }
+            50% {
+                transform: translateY(-20px) translateX(10px);
+                opacity: 0.6;
+            }
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
             pointer-events: none;
             z-index: 0;
         }
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: particleFloat 6s ease-in-out infinite;
+        }
+
+        .particle:nth-child(1) { width: 4px; height: 4px; left: 10%; top: 20%; animation-delay: 0s; animation-duration: 6s; }
+        .particle:nth-child(2) { width: 6px; height: 6px; left: 25%; top: 40%; animation-delay: 1s; animation-duration: 7s; }
+        .particle:nth-child(3) { width: 3px; height: 3px; left: 40%; top: 60%; animation-delay: 2s; animation-duration: 5s; }
+        .particle:nth-child(4) { width: 5px; height: 5px; left: 60%; top: 30%; animation-delay: 1.5s; animation-duration: 8s; }
+        .particle:nth-child(5) { width: 4px; height: 4px; left: 75%; top: 50%; animation-delay: 3s; animation-duration: 6s; }
+        .particle:nth-child(6) { width: 6px; height: 6px; left: 85%; top: 70%; animation-delay: 0.5s; animation-duration: 7s; }
+        .particle:nth-child(7) { width: 3px; height: 3px; left: 15%; top: 80%; animation-delay: 2.5s; animation-duration: 5.5s; }
+        .particle:nth-child(8) { width: 5px; height: 5px; left: 50%; top: 15%; animation-delay: 4s; animation-duration: 6.5s; }
+        .particle:nth-child(9) { width: 4px; height: 4px; left: 90%; top: 45%; animation-delay: 1.2s; animation-duration: 7.5s; }
+        .particle:nth-child(10) { width: 6px; height: 6px; left: 30%; top: 75%; animation-delay: 3.5s; animation-duration: 6s; }
 
         .container {
             max-width: 1400px;
@@ -59,6 +102,88 @@
             to {
                 opacity: 1;
                 transform: translateY(0);
+            }
+        }
+
+        @keyframes tileStagger {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes successPulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+            }
+            50% {
+                transform: scale(1.1);
+                box-shadow: 0 8px 30px rgba(76, 175, 80, 0.6);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+            }
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -200% center;
+            }
+            100% {
+                background-position: 200% center;
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                box-shadow: 0 0 5px rgba(102, 126, 234, 0.5), 0 0 10px rgba(102, 126, 234, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 20px rgba(102, 126, 234, 0.8), 0 0 30px rgba(102, 126, 234, 0.5);
+            }
+        }
+
+        @keyframes checkmark {
+            0% {
+                stroke-dashoffset: 100;
+            }
+            100% {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
             }
         }
 
@@ -277,11 +402,27 @@
             border-radius: 20px;
             background: white;
             padding: 25px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+            box-shadow:
+                0 25px 50px rgba(0,0,0,0.2),
+                0 10px 20px rgba(26, 35, 126, 0.15),
+                inset 0 0 0 1px rgba(255,255,255,0.3);
             display: flex;
             flex-direction: column;
             border: 8px solid #1a237e;
             overflow: hidden;
+            position: relative;
+        }
+
+        .card-front::after, .card-back::after {
+            content: '';
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            right: 6px;
+            bottom: 6px;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            border-radius: 14px;
+            pointer-events: none;
         }
 
         .card-front {
@@ -296,7 +437,13 @@
             left: 0;
             right: 0;
             height: 6px;
-            background: linear-gradient(90deg, #667eea 0%, #764ba2 50%, #667eea 100%);
+            background: linear-gradient(90deg,
+                #667eea 0%,
+                #764ba2 25%,
+                #f093fb 50%,
+                #764ba2 75%,
+                #667eea 100%);
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
         }
 
         .card-back {
@@ -837,6 +984,171 @@
             font-weight: 600;
             margin-left: 10px;
         }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(26, 35, 126, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .loader {
+            width: 80px;
+            height: 80px;
+            border: 8px solid rgba(255, 255, 255, 0.2);
+            border-top: 8px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: white;
+            margin-top: 20px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .loading-subtext {
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        /* Success Notification */
+        .success-notification {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            z-index: 2001;
+            text-align: center;
+            transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .success-notification.active {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            animation: successPulse 0.6s ease;
+        }
+
+        .success-message {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #1a237e;
+            margin-bottom: 10px;
+        }
+
+        .success-submessage {
+            font-size: 0.95rem;
+            color: #666;
+        }
+
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #f0f;
+            position: absolute;
+            animation: confettiFall 3s linear forwards;
+            z-index: 1999;
+        }
+
+        @keyframes confettiFall {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* Enhanced tile stagger animation */
+        .statement-tile {
+            animation: tileStagger 0.5s ease-out backwards;
+        }
+
+        /* Shimmer effect for buttons */
+        .btn-primary::before,
+        .btn-secondary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.3),
+                transparent
+            );
+            transition: left 0.5s;
+        }
+
+        .btn-primary:hover::before,
+        .btn-secondary:hover::before {
+            left: 100%;
+        }
+
+        .btn {
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Glow effect for active elements */
+        .category-btn.active {
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        /* Improved panel entrance */
+        .left-panel .panel:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .left-panel .panel:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .profile-section {
+            animation: slideInRight 0.8s ease;
+        }
     </style>
 </head>
 <body>
@@ -857,6 +1169,34 @@
         border-bottom: 2px solid rgba(255,255,255,0.1);
     ">
         © 2025 Daniel Downes • Vision in 60 Seconds! • For Educational Purposes Only • All Rights Reserved
+    </div>
+
+    <!-- Floating Particles Background -->
+    <div class="particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loader"></div>
+        <div class="loading-text">Generating Your PDF...</div>
+        <div class="loading-subtext">Creating professional vision profile cards</div>
+    </div>
+
+    <!-- Success Notification -->
+    <div class="success-notification" id="successNotification">
+        <div class="success-icon">✓</div>
+        <div class="success-message">Success!</div>
+        <div class="success-submessage">Profile saved successfully</div>
     </div>
 
     <div class="container" style="padding-top: 40px;">
@@ -1060,21 +1400,24 @@
                 tile.className = 'statement-tile';
                 tile.dataset.statement = tileData.text;
                 tile.dataset.category = tileData.category;
-                
+
+                // Add staggered animation delay
+                tile.style.animationDelay = `${index * 0.05}s`;
+
                 tile.innerHTML = `
                     <span class="icon">${tileData.icon}</span>
                     <span>${tileData.text}</span>
                 `;
-                
+
                 // Check if this tile is already selected
                 if (selectedTiles.has(tileData.text)) {
                     tile.classList.add('selected');
                 }
-                
+
                 tile.addEventListener('click', () => {
                     toggleTile(tileData.text, tileData.category, tile);
                 });
-                
+
                 tilesGrid.appendChild(tile);
             });
         }
@@ -1246,12 +1589,13 @@
 
             savedProfiles.push(profile);
             localStorage.setItem('visionProfiles', JSON.stringify(savedProfiles));
-            
+
             closeSaveModal();
             loadSavedProfiles();
-            
-            // Show success message
-            alert('✅ Profile saved successfully!');
+
+            // Show success animation with confetti
+            showSuccess('Profile Saved!', `${profileName} has been saved successfully`);
+            createConfetti();
         }
 
         function loadSavedProfiles() {
@@ -1323,8 +1667,15 @@
 
         // PDF Generation
         async function downloadPDF() {
+            // Show loading overlay
+            showLoading('Generating Your PDF...', 'Creating professional vision profile cards');
+
+            // Small delay to allow loading animation to show
+            await new Promise(resolve => setTimeout(resolve, 100));
+
             // Check if libraries are loaded
             if (typeof html2canvas === 'undefined') {
+                hideLoading();
                 alert('⚠️ HTML2Canvas library not loaded. Please refresh the page and try again.');
                 console.error('html2canvas not found');
                 return;
@@ -1341,6 +1692,7 @@
             }
 
             if (!jsPDFConstructor) {
+                hideLoading();
                 alert('⚠️ jsPDF library not loaded. Please refresh the page and try again.');
                 console.error('jsPDF not found. Checked:', {
                     'window.jspdf': typeof window.jspdf,
@@ -1374,8 +1726,13 @@
                 const fileName = `vision-profile-${studentName}-${Date.now()}.pdf`;
                 pdf.save(fileName);
 
+                // Hide loading and show success
+                hideLoading();
+                showSuccess('PDF Downloaded!', `${fileName} has been created successfully`);
+
             } catch (error) {
                 console.error('PDF generation failed:', error);
+                hideLoading();
                 alert('❌ Failed to generate PDF. Error: ' + error.message + '\n\nPlease refresh the page and try again.');
             }
         }
@@ -1384,15 +1741,33 @@
             const pageWidth = pdf.internal.pageSize.getWidth();
             const pageHeight = pdf.internal.pageSize.getHeight();
 
-            // Background gradient effect (simulated with rectangles)
-            pdf.setFillColor(102, 126, 234);
-            pdf.rect(0, 0, pageWidth, pageHeight / 2, 'F');
-            pdf.setFillColor(118, 75, 162);
-            pdf.rect(0, pageHeight / 2, pageWidth, pageHeight / 2, 'F');
+            // Enhanced gradient background (simulated with multiple rectangles)
+            const gradientSteps = 20;
+            for (let i = 0; i < gradientSteps; i++) {
+                const ratio = i / gradientSteps;
+                const r = Math.round(102 + (118 - 102) * ratio);
+                const g = Math.round(126 - (126 - 75) * ratio);
+                const b = Math.round(234 - (234 - 162) * ratio);
+                pdf.setFillColor(r, g, b);
+                pdf.rect(0, (pageHeight / gradientSteps) * i, pageWidth, pageHeight / gradientSteps, 'F');
+            }
 
-            // White overlay for content area
+            // Decorative circles in background
+            pdf.setFillColor(255, 255, 255, 0.1);
+            pdf.circle(pageWidth * 0.2, pageHeight * 0.3, 40, 'F');
+            pdf.circle(pageWidth * 0.8, pageHeight * 0.7, 60, 'F');
+
+            // White overlay for content area with shadow effect
+            pdf.setFillColor(240, 240, 240);
+            pdf.roundedRect(22, 42, pageWidth - 44, pageHeight - 84, 5, 5, 'F');
             pdf.setFillColor(255, 255, 255);
             pdf.roundedRect(20, 40, pageWidth - 40, pageHeight - 80, 5, 5, 'F');
+
+            // Decorative top bar
+            pdf.setFillColor(102, 126, 234);
+            pdf.roundedRect(20, 40, pageWidth - 40, 15, 5, 5, 'F');
+            pdf.setFillColor(255, 255, 255);
+            pdf.rect(20, 48, pageWidth - 40, 7, 'F');
 
             // Title
             pdf.setTextColor(26, 35, 126);
@@ -1609,16 +1984,63 @@
             // Labels
             pdf.setFontSize(12);
             pdf.setFont(undefined, 'bold');
+            pdf.setTextColor(26, 35, 126);
             pdf.text('FRONT', startX + cardWidthMM / 2, startY + cardHeightMM + 8, { align: 'center' });
             pdf.text('BACK', startX + cardWidthMM + spacingMM + cardWidthMM / 2, startY + cardHeightMM + 8, { align: 'center' });
 
-            // Cut lines
+            // Professional cut lines with corner marks
             pdf.setDrawColor(150, 150, 150);
+            pdf.setLineWidth(0.3);
+            pdf.setLineDashPattern([3, 2], 0);
+
+            const margin = 2;
+            const cornerLength = 5;
+
+            // Helper function to draw corner marks
+            function drawCornerMarks(x, y, width, height) {
+                // Top-left
+                pdf.line(x - margin - cornerLength, y - margin, x - margin, y - margin);
+                pdf.line(x - margin, y - margin - cornerLength, x - margin, y - margin);
+
+                // Top-right
+                pdf.line(x + width + margin, y - margin, x + width + margin + cornerLength, y - margin);
+                pdf.line(x + width + margin, y - margin - cornerLength, x + width + margin, y - margin);
+
+                // Bottom-left
+                pdf.line(x - margin - cornerLength, y + height + margin, x - margin, y + height + margin);
+                pdf.line(x - margin, y + height + margin, x - margin, y + height + margin + cornerLength);
+
+                // Bottom-right
+                pdf.line(x + width + margin, y + height + margin, x + width + margin + cornerLength, y + height + margin);
+                pdf.line(x + width + margin, y + height + margin, x + width + margin, y + height + margin + cornerLength);
+
+                // Dashed outline
+                pdf.setLineDashPattern([3, 2], 0);
+                pdf.rect(x - margin, y - margin, width + 2 * margin, height + 2 * margin);
+            }
+
+            // Draw corner marks for both cards
+            drawCornerMarks(startX, startY, cardWidthMM, cardHeightMM);
+            drawCornerMarks(startX + cardWidthMM + spacingMM, startY, cardWidthMM, cardHeightMM);
+
+            // Add fold line indicator in the middle (vertical)
+            pdf.setLineDashPattern([1, 1], 0);
+            pdf.setDrawColor(200, 200, 200);
             pdf.setLineWidth(0.2);
-            pdf.setLineDashPattern([2, 2], 0);
-            
-            pdf.rect(startX - 2, startY - 2, cardWidthMM + 4, cardHeightMM + 4);
-            pdf.rect(startX + cardWidthMM + spacingMM - 2, startY - 2, cardWidthMM + 4, cardHeightMM + 4);
+            const foldLineX = startX + cardWidthMM + spacingMM / 2;
+            pdf.line(foldLineX, startY, foldLineX, startY + cardHeightMM);
+
+            // Add fold line label
+            pdf.setFontSize(7);
+            pdf.setTextColor(150, 150, 150);
+            pdf.setFont(undefined, 'italic');
+            pdf.text('FOLD', foldLineX, startY + cardHeightMM / 2, { align: 'center', angle: 90 });
+
+            // Add scissors icon indicators (using text)
+            pdf.setFontSize(10);
+            pdf.setTextColor(100, 100, 100);
+            pdf.text('✂', startX - 5, startY - 5);
+            pdf.text('✂', startX + cardWidthMM + spacingMM + cardWidthMM + 3, startY - 5);
 
             if (wasFlipped) {
                 cardInner.classList.add('flipped');
@@ -1627,41 +2049,63 @@
 
         function generateGlossaryPage(pdf) {
             const pageWidth = pdf.internal.pageSize.getWidth();
-            
+
+            // Header background
+            pdf.setFillColor(102, 126, 234);
+            pdf.rect(0, 0, pageWidth, 35, 'F');
+
             // Title
-            pdf.setFontSize(20);
-            pdf.setTextColor(26, 35, 126);
+            pdf.setFontSize(24);
+            pdf.setTextColor(255, 255, 255);
             pdf.setFont(undefined, 'bold');
-            pdf.text('Strategy Glossary', pageWidth / 2, 20, { align: 'center' });
+            pdf.text('📚 Strategy Glossary', pageWidth / 2, 15, { align: 'center' });
 
-            pdf.setFontSize(10);
+            pdf.setFontSize(11);
             pdf.setFont(undefined, 'normal');
-            pdf.setTextColor(100, 100, 100);
-            pdf.text('Detailed explanations of visual strategies', pageWidth / 2, 28, { align: 'center' });
+            pdf.text('Detailed explanations of selected visual strategies', pageWidth / 2, 25, { align: 'center' });
 
-            let yPosition = 40;
+            let yPosition = 45;
 
             // Only show explanations for selected tiles
             droppedTiles.forEach((tile, index) => {
-                if (yPosition > 270) return; // Don't overflow page
+                if (yPosition > 265) return; // Don't overflow page
 
                 const explanation = tileExplanations[tile.statement];
-                
-                // Strategy name
+
+                // Background box for each item
+                const boxHeight = 18;
+                pdf.setFillColor(245, 247, 250);
+                pdf.roundedRect(15, yPosition - 5, pageWidth - 30, boxHeight, 2, 2, 'F');
+
+                // Colored indicator bar
+                const categoryColors = {
+                    'positioning': [33, 150, 243],
+                    'size': [255, 152, 0],
+                    'clarity': [156, 39, 176],
+                    'timing': [0, 188, 212],
+                    'sensory': [233, 30, 99],
+                    'lighting': [255, 87, 34],
+                    'motion': [96, 125, 139]
+                };
+                const color = categoryColors[tile.category] || [100, 100, 100];
+                pdf.setFillColor(color[0], color[1], color[2]);
+                pdf.roundedRect(15, yPosition - 5, 4, boxHeight, 2, 2, 'F');
+
+                // Strategy name with number
                 pdf.setFontSize(11);
                 pdf.setFont(undefined, 'bold');
                 pdf.setTextColor(26, 35, 126);
-                pdf.text(`${index + 1}. ${tile.statement}`, 20, yPosition);
+                pdf.text(`${index + 1}. ${tile.statement}`, 24, yPosition + 2);
 
                 // Explanation
                 pdf.setFontSize(9);
                 pdf.setFont(undefined, 'normal');
                 pdf.setTextColor(60, 60, 60);
-                
-                const lines = pdf.splitTextToSize(explanation, pageWidth - 50);
-                pdf.text(lines, 25, yPosition + 6);
 
-                yPosition += 6 + (lines.length * 5) + 8;
+                const lines = pdf.splitTextToSize(explanation, pageWidth - 55);
+                pdf.text(lines, 24, yPosition + 8);
+
+                yPosition += boxHeight + (lines.length * 4) + 5;
             });
 
             // Footer
@@ -1791,6 +2235,60 @@
             const sizeIndicator = clonedCardElement.querySelector('.size-indicator');
             if (sizeIndicator && sizeIndicator.parentNode) {
                 sizeIndicator.parentNode.removeChild(sizeIndicator);
+            }
+        }
+
+        // Show loading overlay
+        function showLoading(message = 'Generating Your PDF...', submessage = 'Creating professional vision profile cards') {
+            const overlay = document.getElementById('loadingOverlay');
+            overlay.querySelector('.loading-text').textContent = message;
+            overlay.querySelector('.loading-subtext').textContent = submessage;
+            overlay.classList.add('active');
+        }
+
+        // Hide loading overlay
+        function hideLoading() {
+            const overlay = document.getElementById('loadingOverlay');
+            overlay.classList.remove('active');
+        }
+
+        // Show success notification
+        function showSuccess(message = 'Success!', submessage = 'Operation completed successfully') {
+            const notification = document.getElementById('successNotification');
+            notification.querySelector('.success-message').textContent = message;
+            notification.querySelector('.success-submessage').textContent = submessage;
+            notification.classList.add('active');
+
+            // Hide after 2 seconds
+            setTimeout(() => {
+                notification.classList.remove('active');
+            }, 2000);
+        }
+
+        // Create confetti effect
+        function createConfetti() {
+            const colors = ['#FF6B6B', '#4CAF50', '#2196F3', '#FF9800', '#9C27B0', '#00BCD4', '#FFD700'];
+            const confettiCount = 50;
+
+            for (let i = 0; i < confettiCount; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.top = '-10px';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.width = Math.random() * 10 + 5 + 'px';
+                    confetti.style.height = Math.random() * 10 + 5 + 'px';
+                    confetti.style.animationDuration = Math.random() * 2 + 2 + 's';
+                    confetti.style.animationDelay = Math.random() * 0.5 + 's';
+
+                    document.body.appendChild(confetti);
+
+                    // Remove confetti after animation
+                    setTimeout(() => {
+                        confetti.remove();
+                    }, 3500);
+                }, i * 30);
             }
         }
 
